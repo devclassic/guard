@@ -192,16 +192,19 @@
 
 <script setup>
   import { useRouter } from 'vue-router'
-  import { nextTick, onMounted, useTemplateRef } from 'vue'
+  import { nextTick, onMounted, reactive, useTemplateRef } from 'vue'
   import Tabbar from '../shared/tabbar/Tabbar.vue'
 
   const router = useRouter()
 
-  const listRef = useTemplateRef('list')
+  const state = reactive({
+    listRef: useTemplateRef('list'),
+  })
 
-  onMounted(() => {
-    const rect = listRef.value.getBoundingClientRect()
-    listRef.value.style.cssText = `
+  onMounted(async () => {
+    await nextTick()
+    const rect = state.listRef.getBoundingClientRect()
+    state.listRef.style.cssText = `
       position: absolute;
       top: ${rect.top}px;
       bottom: 0;
