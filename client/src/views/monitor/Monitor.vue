@@ -191,14 +191,15 @@
 </template>
 
 <script setup>
+  import { useRouter } from 'vue-router'
   import { nextTick, onMounted, useTemplateRef } from 'vue'
   import Tabbar from '../shared/tabbar/Tabbar.vue'
-  import { useRouter } from 'vue-router'
 
   const router = useRouter()
+
   const listRef = useTemplateRef('list')
 
-  onMounted(async () => {
+  onMounted(() => {
     const rect = listRef.value.getBoundingClientRect()
     listRef.value.style.cssText = `
       position: absolute;
