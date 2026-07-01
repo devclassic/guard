@@ -14,8 +14,8 @@ const router = createRouter({
       meta: {
         transitions: {
           priority: -1,
-          enter: 'slide-left',
-          leave: 'slide-left-reverse',
+          enter: 'fade',
+          leave: 'fade',
         },
       },
     },
@@ -24,7 +24,7 @@ const router = createRouter({
       component: Monitor,
       meta: {
         transitions: {
-          priority: -2,
+          priority: -1,
           enter: 'fade',
           leave: 'fade',
         },
@@ -35,7 +35,7 @@ const router = createRouter({
       component: Info,
       meta: {
         transitions: {
-          priority: -2,
+          priority: -1,
           enter: 'fade',
           leave: 'fade',
         },
@@ -46,7 +46,7 @@ const router = createRouter({
       component: Mine,
       meta: {
         transitions: {
-          priority: -2,
+          priority: -1,
           enter: 'fade',
           leave: 'fade',
         },
