@@ -24,6 +24,7 @@
         </div>
       </div>
     </div>
+    <div @click="logout" class="logout">退出登录</div>
   </div>
 </template>
 
@@ -38,6 +39,10 @@
       message: '请联系平台销售修改',
       duration: 3000,
     })
+  }
+
+  const logout = () => {
+    router.push('/login')
   }
 </script>
 
@@ -96,5 +101,14 @@
         }
       }
     }
+  }
+
+  .logout {
+    font-size: 0.3rem;
+    color: #005cdd;
+    position: absolute;
+    left: 50%;
+    bottom: 1.35rem;
+    transform: translateX(-50%);
   }
 </style>
