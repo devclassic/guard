@@ -35,7 +35,7 @@
     min-height: 100dvh;
     position: absolute;
     margin: 0 auto;
-    background-color: #f9f9f9;
+    background: #f9f9f9 url('./assets/images/page-bg.png') no-repeat top center / 100% 3.6rem;
     .main {
       width: 100%;
       position: absolute;

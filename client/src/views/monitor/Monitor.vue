@@ -195,11 +195,11 @@
   import { nextTick, onMounted, reactive, useTemplateRef } from 'vue'
   import Tabbar from '../shared/tabbar/Tabbar.vue'
 
-  const router = useRouter()
-
   const state = reactive({
     listRef: useTemplateRef('list'),
   })
+
+  const router = useRouter()
 
   onMounted(async () => {
     await nextTick()
@@ -213,10 +213,6 @@
 </script>
 
 <style scoped lang="scss">
-  .main {
-    background: url('../../assets/images/monitor-bg.png') no-repeat top center / 100% 3.6rem;
-  }
-
   .box {
     width: 6.9rem;
     margin: 0.9rem auto 0;
