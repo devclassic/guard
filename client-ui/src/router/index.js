@@ -3,6 +3,7 @@ import Login from '../views/login/Login.vue'
 import Monitor from '../views/monitor/Monitor.vue'
 import Info from '../views/info/Info.vue'
 import Mine from '../views/mine/Mine.vue'
+import User from '../views/user/User.vue'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -49,6 +50,17 @@ const router = createRouter({
           priority: -1,
           enter: 'fade',
           leave: 'fade',
+        },
+      },
+    },
+    {
+      path: '/user',
+      component: User,
+      meta: {
+        transitions: {
+          priority: -2,
+          enter: 'slide-left',
+          leave: 'slide-left-reverse',
         },
       },
     },

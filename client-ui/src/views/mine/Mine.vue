@@ -4,7 +4,7 @@
       <div class="box">
         <div class="title">我的</div>
         <div class="list">
-          <div class="item">
+          <div @click="user" class="item">
             <img src="../../assets/images/mine-icon1.png" class="icon" />
             <div class="text">个人中心</div>
           </div>
@@ -30,16 +30,20 @@
 
   const router = useRouter()
 
+  const user = () => {
+    router.push('/user')
+  }
+
   const version = () => {
     showToast({
-      message: '当前版本为 0.1.0 开发版 2026',
+      message: '当前版本为内部开发版',
       duration: 3000,
     })
   }
 
   const help = () => {
     showToast({
-      message: '进入个人中心获取专属销售联系方式',
+      message: '进入个人中心获取平台销售联系方式',
       duration: 3000,
     })
   }
