@@ -21,6 +21,9 @@
 
 <script setup>
   import { useRouter } from 'vue-router'
+  import { useKeyboardScroll } from '../../hooks/useKeyboardScroll'
+
+  useKeyboardScroll()
 
   const router = useRouter()
 
