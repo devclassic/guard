@@ -53,6 +53,7 @@
     }
     .title {
       font-size: 0.34rem;
+      font-weight: bold;
       position: absolute;
       top: 0.65rem;
       left: 50%;
@@ -68,6 +69,9 @@
       background: #ffffff;
       display: flex;
       align-items: center;
+      &.mt {
+        margin-top: 0.2rem;
+      }
       .wrap {
         height: 100%;
         margin-left: 0.3rem;
@@ -77,17 +81,19 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        .arrow {
-          width: 0.1rem;
-          height: 0.2rem;
-          background: url('../../assets/images/user-arrow.png') no-repeat center / 100% 100%;
-        }
         &.nb {
           border: 0;
         }
-      }
-      &.mt {
-        margin-top: 0.2rem;
+        .left {
+          font-weight: bold;
+        }
+        .right {
+          .arrow {
+            width: 0.1rem;
+            height: 0.2rem;
+            background: url('../../assets/images/user-arrow.png') no-repeat center / 100% 100%;
+          }
+        }
       }
     }
   }

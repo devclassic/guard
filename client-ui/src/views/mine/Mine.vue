@@ -72,6 +72,7 @@
         .text {
           margin-left: 0.5rem;
           font-size: 0.3rem;
+          font-weight: bold;
         }
       }
     }

@@ -205,6 +205,7 @@
     await nextTick()
     const rect = state.listRef.getBoundingClientRect()
     state.listRef.style.cssText = `
+      margin-top: 0;
       position: absolute;
       top: ${rect.top}px;
       bottom: 0;
@@ -222,6 +223,7 @@
       align-items: center;
       .left {
         font-size: 0.3rem;
+        font-weight: bold;
       }
       .right {
         display: flex;
@@ -252,11 +254,15 @@
       .item {
         font-size: 0.36rem;
         text-align: center;
-      }
-      .text {
-        font-size: 0.24rem;
-        text-align: center;
-        margin-top: 0.3rem;
+        .num {
+          font-size: 0.36rem;
+          font-weight: bold;
+        }
+        .text {
+          font-size: 0.24rem;
+          text-align: center;
+          margin-top: 0.3rem;
+        }
       }
     }
     .tool {
@@ -314,6 +320,7 @@
             .name {
               font-size: 0.3rem;
               margin-left: 0.1rem;
+              font-weight: bold;
             }
           }
           .right {

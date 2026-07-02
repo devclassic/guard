@@ -46,6 +46,7 @@
     margin: 2.1rem auto 0;
     .title {
       font-size: 0.5rem;
+      font-weight: bold;
     }
     .slogan {
       font-size: 0.28rem;
@@ -59,6 +60,7 @@
         flex-direction: column;
         .label {
           font-size: 0.32rem;
+          font-weight: bold;
         }
         .input {
           width: 100%;
@@ -91,6 +93,7 @@
     .guest {
       margin-top: 0.45rem;
       font-size: 0.3rem;
+      font-weight: bold;
     }
   }
 </style>
