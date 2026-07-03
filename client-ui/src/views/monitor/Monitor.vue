@@ -43,7 +43,7 @@
         <div ref="list" class="list scroll">
           <div class="item">
             <div class="info1">
-              <div class="left">
+              <div @click="detail" class="left">
                 <img src="../../assets/images/monitor-item-icon.png" class="icon" />
                 <div class="name">传感器名称</div>
               </div>
@@ -62,7 +62,7 @@
           </div>
           <div class="item">
             <div class="info1">
-              <div class="left">
+              <div @click="detail" class="left">
                 <img src="../../assets/images/monitor-item-icon.png" class="icon" />
                 <div class="name">传感器名称</div>
               </div>
@@ -103,7 +103,7 @@
           </div>
           <div class="item">
             <div class="info1">
-              <div class="left">
+              <div @click="detail" class="left">
                 <img src="../../assets/images/monitor-item-icon.png" class="icon" />
                 <div class="name">传感器名称</div>
               </div>
@@ -144,7 +144,7 @@
           </div>
           <div class="item">
             <div class="info1">
-              <div class="left">
+              <div @click="detail" class="left">
                 <img src="../../assets/images/monitor-item-icon.png" class="icon" />
                 <div class="name">传感器名称</div>
               </div>
@@ -191,9 +191,13 @@
 </template>
 
 <script setup>
+  import Tabbar from '../shared/tabbar/Tabbar.vue'
   import { useRouter } from 'vue-router'
   import { nextTick, onMounted, reactive, useTemplateRef } from 'vue'
-  import Tabbar from '../shared/tabbar/Tabbar.vue'
+  import { useTabbarStore } from '../../stores/tabbar.js'
+
+  const tabbarStore = useTabbarStore()
+  tabbarStore.current = 0
 
   const state = reactive({
     listRef: useTemplateRef('list'),
@@ -211,6 +215,10 @@
       bottom: 0;
     `
   })
+
+  const detail = () => {
+    router.push('/detail')
+  }
 </script>
 
 <style scoped lang="scss">

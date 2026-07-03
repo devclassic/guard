@@ -1,7 +1,7 @@
 <template>
   <div class="page">
-    <div @click="router.back" class="back"></div>
-    <div class="title">个人中心</div>
+    <div @click="router.back" class="page-back"></div>
+    <div class="page-title">个人中心</div>
     <div class="list">
       <div class="item">
         <div class="wrap">
@@ -48,7 +48,7 @@
 
 <style scoped lang="scss">
   .page {
-    .back {
+    .page-back {
       width: 0.21rem;
       height: 0.39rem;
       background: url('../../assets/images/page-back.png') no-repeat center / 100% 100%;
@@ -56,7 +56,7 @@
       top: 0.65rem;
       left: 0.3rem;
     }
-    .title {
+    .page-title {
       font-size: 0.34rem;
       font-weight: bold;
       position: absolute;

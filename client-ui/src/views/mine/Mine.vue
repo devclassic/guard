@@ -27,6 +27,10 @@
   import Tabbar from '../shared/tabbar/Tabbar.vue'
   import { useRouter } from 'vue-router'
   import { showToast } from 'vant'
+  import { useTabbarStore } from '../../stores/tabbar.js'
+
+  const tabbarStore = useTabbarStore()
+  tabbarStore.current = 2
 
   const router = useRouter()
 

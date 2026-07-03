@@ -4,14 +4,14 @@
       <div class="box">
         <div class="title">消息</div>
         <div class="list">
-          <div class="item">
+          <div @click="router.push('/alarm')" class="item">
             <img src="../../assets/images/info-bell1.png" class="icon" />
             <div class="text">
               <div class="title">设备告警</div>
               <div class="info">设备名称1出现气体泄漏，请尽快处理</div>
             </div>
           </div>
-          <div class="item">
+          <div @click="router.push('/monitor')" class="item">
             <img src="../../assets/images/info-bell2.png" class="icon" />
             <div class="text">
               <div class="title">离线通知</div>
@@ -28,6 +28,10 @@
 <script setup>
   import Tabbar from '../shared/tabbar/Tabbar.vue'
   import { useRouter } from 'vue-router'
+  import { useTabbarStore } from '../../stores/tabbar.js'
+
+  const tabbarStore = useTabbarStore()
+  tabbarStore.current = 1
 
   const router = useRouter()
 </script>
