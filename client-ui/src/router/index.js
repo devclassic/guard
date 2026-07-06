@@ -1,9 +1,10 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Login from '../views/login/Login.vue'
 import Monitor from '../views/monitor/Monitor.vue'
-import Detail from '../views/detail/Detail.vue'
+import MonitorDetail from '../views/monitor-detail/MonitorDetail.vue'
 import Info from '../views/info/Info.vue'
 import Alarm from '../views/alarm/Alarm.vue'
+import AlarmDtail from '../views/alarm-detail/AlarmDetail.vue'
 import Mine from '../views/mine/Mine.vue'
 import User from '../views/user/User.vue'
 
@@ -34,8 +35,8 @@ const router = createRouter({
       },
     },
     {
-      path: '/detail',
-      component: Detail,
+      path: '/monitor/detail',
+      component: MonitorDetail,
       meta: {
         transitions: {
           priority: -2,
@@ -61,6 +62,17 @@ const router = createRouter({
       meta: {
         transitions: {
           priority: -2,
+          enter: 'slide-left',
+          leave: 'slide-left-reverse',
+        },
+      },
+    },
+    {
+      path: '/alarm/detail',
+      component: AlarmDtail,
+      meta: {
+        transitions: {
+          priority: -3,
           enter: 'slide-left',
           leave: 'slide-left-reverse',
         },

@@ -1,9 +1,9 @@
 <template>
   <div class="page">
     <div @click="router.back" class="page-back"></div>
-    <div class="page-title">告警记录</div>
+    <div class="page-title">告警详细</div>
     <div class="list scroll">
-      <div @click="detail" class="item">
+      <div class="item">
         <div class="status">
           <div class="left">
             <div class="status1">待处理</div>
@@ -22,25 +22,10 @@
         <div class="factor">甲烷(PPM)：1121.00 PPM</div>
         <div class="info">告警：AI告警判断原因和处理方案。尽量让ai处理在 30个字符内。</div>
       </div>
-      <div class="item">
-        <div class="status">
-          <div class="left">
-            <div class="status1 active">已处理</div>
-            <div class="status2">告警</div>
-          </div>
-          <div class="right">2026-04-16 13:05:49</div>
-        </div>
-        <div class="name">
-          <img src="../../assets/images/monitor-item-icon.png" class="icon" />
-          <div>传感器名称</div>
-        </div>
-        <div class="pos">
-          <div class="icon"></div>
-          <div class="text">设备位置：工厂西北角锅炉</div>
-        </div>
-        <div class="factor">甲烷(PPM)：1121.00 PPM</div>
-        <div class="info">告警：AI告警判断原因和处理方案。尽量让ai处理在 30个字符内。</div>
-      </div>
+    </div>
+    <div class="bottombar">
+      <div class="ai">AI分析</div>
+      <div class="btn">已处理</div>
     </div>
   </div>
 </template>
@@ -50,10 +35,6 @@
   import { showToast } from 'vant'
 
   const router = useRouter()
-
-  const detail = () => {
-    router.push('/alarm/detail')
-  }
 </script>
 
 <style scoped lang="scss">
@@ -83,6 +64,7 @@
     left: 50%;
     bottom: 0;
     transform: translateX(-50%);
+    padding-bottom: 1.25rem;
     .item {
       padding: 0.4rem 0.3rem;
       margin-bottom: 0.2rem;
@@ -165,6 +147,39 @@
         color: #222222;
         line-height: 1.5;
       }
+    }
+  }
+
+  .bottombar {
+    width: 100%;
+    height: 1.25rem;
+    background: #ffffff;
+    border-top: 1px solid #e8e8e8;
+    position: absolute;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.3rem;
+    .ai {
+      width: 2.33rem;
+      height: 0.88rem;
+      background: #f0f1f7;
+      color: #4586ff;
+      border-radius: 0.2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .btn {
+      width: 4.37rem;
+      height: 0.88rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #ffffff;
+      background: url('../../assets/images/alarm-detail-btn.png') no-repeat center / 100% 100%;
+      margin-left: 0.2rem;
     }
   }
 </style>

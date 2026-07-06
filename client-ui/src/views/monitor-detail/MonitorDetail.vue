@@ -46,7 +46,7 @@
           <div class="left">历史数据</div>
           <div class="right"></div>
         </div>
-        <div class="item">
+        <div @click="alarm" class="item">
           <div class="left">告警记录</div>
           <div class="right"></div>
         </div>
@@ -65,6 +65,10 @@
   })
 
   const router = useRouter()
+
+  const alarm = () => {
+    router.push('/alarm/detail')
+  }
 </script>
 
 <style scoped lang="scss">

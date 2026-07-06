@@ -30,7 +30,7 @@
           </div>
         </div>
         <div class="tool">
-          <div class="left">
+          <div @click="state.showMenu = !state.showMenu" class="left">
             <div>设备状态</div>
             <div class="status"></div>
             <div class="text">正常运行</div>
@@ -38,6 +38,15 @@
           <div class="right">
             <div class="btn btn1"></div>
             <div class="btn btn2"></div>
+          </div>
+        </div>
+        <div v-show="state.showMenu" class="menu">
+          <div v-for="(item, i) in state.menus" class="item" :class="{ active: i + 1 === 4 }">
+            <div class="title">
+              <div class="icon" :class="`icon${i + 1}`"></div>
+              <div class="text">{{ item }}</div>
+            </div>
+            <div class="select"></div>
           </div>
         </div>
         <div ref="list" class="list scroll">
@@ -200,6 +209,8 @@
   tabbarStore.current = 0
 
   const state = reactive({
+    menus: ['全部设备', '预警状态', '告警状态', '正常运行', '离线状态', '在线设备'],
+    showMenu: false,
     listRef: useTemplateRef('list'),
   })
 
@@ -217,7 +228,7 @@
   })
 
   const detail = () => {
-    router.push('/detail')
+    router.push('/monitor/detail')
   }
 </script>
 
@@ -304,6 +315,69 @@
         }
         .btn2 {
           background: url('../../assets/images/monitor-tool2.png') no-repeat center / 100% 100%;
+        }
+      }
+    }
+    .menu {
+      width: 100%;
+      margin-top: 0.1rem;
+      position: absolute;
+      left: 0;
+      z-index: 100;
+      background: #ffffff;
+      padding: 0 0.15rem;
+      .item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 1rem;
+        border-bottom: 1px solid #e8e8e8;
+        padding: 0 0.25rem;
+        .title {
+          display: flex;
+          align-items: center;
+          .icon {
+            width: 0.4rem;
+            height: 0.4rem;
+          }
+          .icon1 {
+            background: url('../../assets/images/monitor-status1.png') no-repeat center / 100% 100%;
+          }
+          .icon2 {
+            background: url('../../assets/images/monitor-status2.png') no-repeat center / 100% 100%;
+          }
+          .icon3 {
+            background: url('../../assets/images/monitor-status3.png') no-repeat center / 100% 100%;
+          }
+          .icon4 {
+            background: url('../../assets/images/monitor-status4.png') no-repeat center / 100% 100%;
+          }
+          .icon5 {
+            background: url('../../assets/images/monitor-status5.png') no-repeat center / 100% 100%;
+            width: 0.4rem;
+            height: 0.55rem;
+          }
+          .icon6 {
+            background: url('../../assets/images/monitor-status6.png') no-repeat center / 100% 100%;
+          }
+          .text {
+            margin-left: 0.3rem;
+            font-size: 0.3rem;
+          }
+        }
+        .select {
+          width: 0.3rem;
+          height: 0.26rem;
+          background: url('../../assets/images/monitor-status-a.png') no-repeat center / 100% 100%;
+          display: none;
+        }
+        &:last-child {
+          border: 0;
+        }
+        &.active {
+          .select {
+            display: block;
+          }
         }
       }
     }
