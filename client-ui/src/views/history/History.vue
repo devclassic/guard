@@ -110,6 +110,7 @@
 
   const onDate = values => {
     const [start, end] = values
+    state.showDate = false
   }
 </script>
 
@@ -187,12 +188,17 @@
     display: flex;
     align-items: flex-start;
     .table {
-      font-size: 0.24rem;
       th,
       td {
         white-space: nowrap;
         text-align: left;
         padding: 0.08rem 0.5rem 0.08rem 0;
+      }
+      th {
+        font-size: 0.26rem;
+      }
+      td {
+        font-size: 0.24rem;
       }
       th:first-child {
         padding: 0;
