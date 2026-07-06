@@ -11,7 +11,7 @@
       <div class="right">2026-04-15 13:05:49</div>
     </div>
     <div class="list scroll">
-      <div class="item">
+      <div @click="historySingle" class="item">
         <div class="wrap">
           <div class="left">
             <div class="status status1">正常</div>
@@ -20,7 +20,7 @@
           <div class="right"></div>
         </div>
       </div>
-      <div class="item">
+      <div @click="historySingle" class="item">
         <div class="wrap">
           <div class="left">
             <div class="status status2">离线</div>
@@ -29,7 +29,7 @@
           <div class="right"></div>
         </div>
       </div>
-      <div class="item">
+      <div @click="historySingle" class="item">
         <div class="wrap">
           <div class="left">
             <div class="status status3">告警</div>
@@ -42,7 +42,7 @@
     </div>
     <van-action-sheet v-model:show="state.showMenu" title="更多" round class="more-action-sheet">
       <div class="items">
-        <div class="item">
+        <div @click="history" class="item">
           <div class="left">历史数据</div>
           <div class="right"></div>
         </div>
@@ -65,6 +65,14 @@
   })
 
   const router = useRouter()
+
+  const history = () => {
+    router.push('/history')
+  }
+
+  const historySingle = () => {
+    router.push('/history/single')
+  }
 
   const alarm = () => {
     router.push('/alarm/detail')

@@ -2,6 +2,8 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import Login from '../views/login/Login.vue'
 import Monitor from '../views/monitor/Monitor.vue'
 import MonitorDetail from '../views/monitor-detail/MonitorDetail.vue'
+import History from '../views/history/History.vue'
+import HistorySingle from '../views/history-single/HistorySingle.vue'
 import Info from '../views/info/Info.vue'
 import Alarm from '../views/alarm/Alarm.vue'
 import AlarmDtail from '../views/alarm-detail/AlarmDetail.vue'
@@ -40,6 +42,28 @@ const router = createRouter({
       meta: {
         transitions: {
           priority: -2,
+          enter: 'slide-left',
+          leave: 'slide-left-reverse',
+        },
+      },
+    },
+    {
+      path: '/history',
+      component: History,
+      meta: {
+        transitions: {
+          priority: -3,
+          enter: 'slide-left',
+          leave: 'slide-left-reverse',
+        },
+      },
+    },
+    {
+      path: '/history/single',
+      component: HistorySingle,
+      meta: {
+        transitions: {
+          priority: -3,
           enter: 'slide-left',
           leave: 'slide-left-reverse',
         },
