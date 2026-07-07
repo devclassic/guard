@@ -21,17 +21,13 @@
         </div>
       </div>
     </div>
-    <Tabbar />
+    <Tabbar :current="2" />
   </div>
 </template>
 
 <script setup>
   import Tabbar from '../shared/tabbar/Tabbar.vue'
   import { useRouter } from 'vue-router'
-  import { useTabbarStore } from '../../stores/tabbar.js'
-
-  const tabbarStore = useTabbarStore()
-  tabbarStore.current = 1
 
   const router = useRouter()
 </script>

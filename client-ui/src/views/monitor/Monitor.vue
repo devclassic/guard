@@ -195,7 +195,7 @@
         </div>
       </div>
     </div>
-    <Tabbar />
+    <Tabbar :current="1" />
   </div>
 </template>
 
@@ -203,10 +203,6 @@
   import Tabbar from '../shared/tabbar/Tabbar.vue'
   import { useRouter } from 'vue-router'
   import { nextTick, onMounted, reactive, useTemplateRef } from 'vue'
-  import { useTabbarStore } from '../../stores/tabbar.js'
-
-  const tabbarStore = useTabbarStore()
-  tabbarStore.current = 0
 
   const state = reactive({
     menus: ['全部设备', '预警状态', '告警状态', '正常运行', '离线状态', '在线设备'],

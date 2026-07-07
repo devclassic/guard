@@ -4,9 +4,9 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "format": "prettier -w .",
     "dev": "vite",
-    "build": "vite build",
-    "fmt": "prettier -w ."
+    "build": "vite build"
   },
   "dependencies": {
     "@duannx/vue-router-transition": "^1.3.0",

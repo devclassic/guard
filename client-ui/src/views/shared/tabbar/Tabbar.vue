@@ -1,14 +1,14 @@
 <template>
   <div class="tabbar">
-    <div @click="change(0)" class="item" :class="{ active: tabbarStore.current === 0 }">
+    <div @click="change(1)" class="item" :class="{ active: tabbarStore.current === 1 }">
       <div class="icon icon1"></div>
       <div class="text">监控</div>
     </div>
-    <div @click="change(1)" class="item" :class="{ active: tabbarStore.current === 1 }">
+    <div @click="change(2)" class="item" :class="{ active: tabbarStore.current === 2 }">
       <div class="icon icon2"></div>
       <div class="text">消息</div>
     </div>
-    <div @click="change(2)" class="item" :class="{ active: tabbarStore.current === 2 }">
+    <div @click="change(3)" class="item" :class="{ active: tabbarStore.current === 3 }">
       <div class="icon icon3"></div>
       <div class="text">我的</div>
     </div>
@@ -19,18 +19,22 @@
   import { useRouter } from 'vue-router'
   import { useTabbarStore } from '../../../stores/tabbar'
 
+  const props = defineProps(['current'])
+
   const router = useRouter()
   const tabbarStore = useTabbarStore()
 
+  tabbarStore.current = props.current
+
   const change = index => {
     switch (index) {
-      case 0:
+      case 1:
         router.push('/monitor')
         break
-      case 1:
+      case 2:
         router.push('/info')
         break
-      case 2:
+      case 3:
         router.push('/mine')
         break
     }
