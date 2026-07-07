@@ -1,7 +1,25 @@
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import Vue from '@vitejs/plugin-vue'
 
-// https://vite.dev/config/
+const Warn = () => {
+  return {
+    name: 'filter-rolldown-warnings',
+    enforce: 'pre',
+    configResolved(config) {
+      const originalWarn = config.logger.warn
+      config.logger.warn = (msg, options) => {
+        if (typeof msg === 'string' && msg.includes('INVALID_ANNOTATION')) return
+        originalWarn(msg, options)
+      }
+    },
+  }
+}
+
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [Vue(), Warn()],
+  base: './',
+  build: {
+    outDir: 'dist/admin',
+    chunkSizeWarningLimit: 10000,
+  },
 })

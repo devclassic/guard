@@ -21,8 +21,8 @@
     <el-table-column prop="state" label="区域" width="200" />
     <el-table-column prop="city" label="城市" width="200" />
     <el-table-column prop="address" label="地址" width="300" />
-    <el-table-column prop="zip" label="邮编" width="500" />
-    <el-table-column fixed="right" label="操作" width="250">
+    <el-table-column prop="zip" label="邮编" width="200" />
+    <el-table-column label="操作" width="300">
       <template #default="scope">
         <el-button size="small" type="success" @click="edit(scope.row)">编辑</el-button>
         <el-popconfirm title="确认删除?" @confirm="remove(scope.row)">
@@ -34,7 +34,12 @@
     </el-table-column>
   </el-table>
   <div class="pager">
-    <el-pagination size="small" background layout="total, prev, pager, next" :total="100" />
+    <el-pagination
+      size="small"
+      background
+      layout="total, prev, pager, next"
+      :pager-count="5"
+      :total="100" />
   </div>
 
   <el-dialog v-model="state.showEdit" title="编辑" class="dialog">
@@ -46,7 +51,7 @@
         <el-input />
       </el-form-item>
       <el-form-item label="简介">
-        <el-input type="textarea" rows="5" />
+        <el-input type="textarea" :rows="5" />
       </el-form-item>
     </el-form>
     <template #footer>

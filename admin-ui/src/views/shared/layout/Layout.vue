@@ -31,7 +31,17 @@
           <el-icon v-if="state.showMenu" color="#ffffff"><Fold /></el-icon>
           <el-icon v-if="!state.showMenu" color="#ffffff"><Expand /></el-icon>
         </div>
-        <div class="right"></div>
+        <div class="right">
+          <el-dropdown trigger="click" class="user">
+            <span>管理员</span>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item>修改密码</el-dropdown-item>
+                <el-dropdown-item>退出登录</el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
+        </div>
       </div>
       <div class="main">
         <router-view />
@@ -82,10 +92,21 @@
       .header {
         height: 56px;
         background: #545c64;
-        padding: 0 10px;
+        padding: 0 30px 0 10px;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        .left {
+          cursor: pointer;
+        }
+        .right {
+          .user {
+            span {
+              color: #ffffff;
+              cursor: pointer;
+            }
+          }
+        }
       }
       .main {
         width: 100%;
