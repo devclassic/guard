@@ -16,12 +16,12 @@
     :stripe="true"
     @selection-change="selectionChange">
     <el-table-column type="selection" width="40" />
-    <el-table-column show-overflow-tooltip prop="date" label="时间" />
-    <el-table-column show-overflow-tooltip prop="name" label="姓名" />
-    <el-table-column show-overflow-tooltip prop="state" label="区域" />
-    <el-table-column show-overflow-tooltip prop="city" label="城市" />
-    <el-table-column show-overflow-tooltip prop="address" label="地址" />
-    <el-table-column show-overflow-tooltip prop="zip" label="邮编" />
+    <el-table-column show-overflow-tooltip prop="date" label="时间" :width="state.colWidth" />
+    <el-table-column show-overflow-tooltip prop="name" label="姓名" :width="state.colWidth" />
+    <el-table-column show-overflow-tooltip prop="state" label="区域" :width="state.colWidth" />
+    <el-table-column show-overflow-tooltip prop="city" label="城市" :width="state.colWidth" />
+    <el-table-column show-overflow-tooltip prop="address" label="地址" :width="state.colWidth" />
+    <el-table-column show-overflow-tooltip prop="zip" label="邮编" :width="state.colWidth" />
     <el-table-column label="操作" width="255">
       <template #default="scope">
         <el-button size="small" type="success" @click="edit(scope.row)">编辑</el-button>
@@ -64,11 +64,13 @@
 </template>
 
 <script setup>
-  import { reactive } from 'vue'
+  import { reactive, watchEffect } from 'vue'
+  import { useWindowSize } from '@vueuse/core'
 
   const state = reactive({
     listData: [],
     selectIds: [],
+    colWidth: 'auto',
     showEdit: false,
   })
 
@@ -130,6 +132,16 @@
       zip: 'CA 90036',
     },
   ]
+
+  const { width, height } = useWindowSize()
+
+  watchEffect(() => {
+    if (width.value > 1024) {
+      state.colWidth = 'auto'
+    } else {
+      state.colWidth = '150'
+    }
+  })
 
   const selectionChange = items => {
     const ids = []
