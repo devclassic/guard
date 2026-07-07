@@ -16,13 +16,13 @@
     :stripe="true"
     @selection-change="selectionChange">
     <el-table-column type="selection" width="40" />
-    <el-table-column prop="date" label="时间" width="200" />
-    <el-table-column prop="name" label="姓名" width="200" />
-    <el-table-column prop="state" label="区域" width="200" />
-    <el-table-column prop="city" label="城市" width="200" />
-    <el-table-column prop="address" label="地址" width="300" />
-    <el-table-column prop="zip" label="邮编" width="200" />
-    <el-table-column label="操作" width="300">
+    <el-table-column show-overflow-tooltip prop="date" label="时间" />
+    <el-table-column show-overflow-tooltip prop="name" label="姓名" />
+    <el-table-column show-overflow-tooltip prop="state" label="区域" />
+    <el-table-column show-overflow-tooltip prop="city" label="城市" />
+    <el-table-column show-overflow-tooltip prop="address" label="地址" />
+    <el-table-column show-overflow-tooltip prop="zip" label="邮编" />
+    <el-table-column label="操作" width="255">
       <template #default="scope">
         <el-button size="small" type="success" @click="edit(scope.row)">编辑</el-button>
         <el-popconfirm title="确认删除?" @confirm="remove(scope.row)">
