@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { KnexModule } from 'nestjs-knex'
 import { ClientModule } from './client/client.module'
+import { AdminModule } from './admin/admin.module'
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { ClientModule } from './client/client.module'
       }),
     }),
     ClientModule,
+    AdminModule,
   ],
   providers: [],
 })

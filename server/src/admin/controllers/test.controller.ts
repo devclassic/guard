@@ -1,12 +1,12 @@
 import { Controller, Get } from '@nestjs/common'
 import { InjectKnex, type Knex } from 'nestjs-knex'
 
-@Controller('client/test')
+@Controller('admin/test')
 export class TestController {
   constructor(@InjectKnex() private readonly knex: Knex) {}
 
   @Get()
   index() {
-    return { message: '客户端接口' }
+    return { message: '后台接口' }
   }
 }
