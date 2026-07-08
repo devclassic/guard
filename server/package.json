@@ -9,7 +9,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "build": "nest build",
-    "release": "node scripts/release.ts"
+    "release": "node scripts/release.js"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.27",
