@@ -6,13 +6,15 @@ const http = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL ?? '',
 })
 
+let errorCount = 0
+
 http.interceptors.request.use(
   config => {
     const user = JSON.parse(localStorage.getItem('user')) || {}
     config.headers.token = user.token
     return config
   },
-  error => {
+  async error => {
     return Promise.reject(error)
   },
 )
@@ -30,6 +32,16 @@ http.interceptors.response.use(
     return response
   },
   error => {
+    if (errorCount === 0) {
+      ElMessageBox.alert(error, '提示', {
+        type: 'error',
+        callback() {
+          errorCount = 0
+        },
+      })
+    }
+    errorCount++
+    console.log(errorCount)
     return Promise.reject(error)
   },
 )
