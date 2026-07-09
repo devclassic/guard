@@ -12,6 +12,7 @@ const router = createRouter({
         { path: '/home', component: () => import('../views/home/Home.vue') },
         { path: '/admin', component: () => import('../views/admin/Admin.vue') },
         { path: '/user', component: () => import('../views/user/User.vue') },
+        { path: '/device/group', component: () => import('../views/group/Group.vue') },
       ],
     },
   ],
