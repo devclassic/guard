@@ -46,13 +46,16 @@
   <el-dialog v-model="state.showEdit" :title="state.editType" class="dialog" @closed="editClosed">
     <el-form label-width="auto">
       <el-form-item label="名称">
-        <el-input v-model="state.data.name" />
+        <el-input v-model="state.data.name" placeholder="请填写用户名称" />
       </el-form-item>
       <el-form-item label="账号">
-        <el-input v-model="state.data.account" :disabled="state.editType === '编辑'" />
+        <el-input
+          v-model="state.data.account"
+          :disabled="state.editType === '编辑'"
+          placeholder="请填写用户账号" />
       </el-form-item>
       <el-form-item label="密码">
-        <el-input v-model="state.data.password" type="password" />
+        <el-input v-model="state.data.password" type="password" placeholder="请填写用户密码" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -66,10 +69,10 @@
   <el-dialog v-model="state.showSearch" title="检索" class="dialog">
     <el-form label-width="auto">
       <el-form-item label="名称">
-        <el-input v-model="state.search.name" />
+        <el-input v-model="state.search.name" placeholder="请填写用户名称" />
       </el-form-item>
       <el-form-item label="账号">
-        <el-input v-model="state.search.account" />
+        <el-input v-model="state.search.account" placeholder="请填写用户账号" />
       </el-form-item>
     </el-form>
     <template #footer>

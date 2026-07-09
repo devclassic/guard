@@ -5,6 +5,12 @@ import { InjectKnex, type Knex } from 'nestjs-knex'
 export class DeviceController {
   constructor(@InjectKnex() private readonly knex: Knex) {}
 
+  @Post('group')
+  async group(@Body() body: any) {
+    const data = await this.knex.table('group').orderBy('id', 'desc')
+    return { success: true, message: '添加成功', data }
+  }
+
   @Post('list')
   async list(@Body() body: any) {
     const page = body.page
@@ -12,7 +18,16 @@ export class DeviceController {
     const offset = (page - 1) * size
     const result = await this.knex.table('device').count('*', { as: 'total' })
     const total = result[0].total
-    let knex = this.knex.table('device').orderBy('id', 'desc').limit(size).offset(offset)
+    let knex = this.knex
+      .table('device')
+      .select('device.*', 'group.name as group')
+      .leftJoin('group', 'device.group_id', 'group.id')
+      .orderBy('device.id', 'desc')
+      .limit(size)
+      .offset(offset)
+    if (body.search.group_id) {
+      knex = knex.where('group_id', body.search.group_id)
+    }
     if (body.search.address) {
       knex = knex.where('address', 'like', `%${body.search.address}%`)
     }

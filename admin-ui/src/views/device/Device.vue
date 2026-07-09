@@ -19,6 +19,7 @@
 
   <el-table :data="state.list" :border="true" :stripe="true" @selection-change="selectionChange">
     <el-table-column type="selection" width="40" />
+    <el-table-column show-overflow-tooltip prop="group" label="分组" :width="state.colWidth" />
     <el-table-column show-overflow-tooltip prop="address" label="地址" :width="state.colWidth" />
     <el-table-column show-overflow-tooltip prop="name" label="名称" :width="state.colWidth" />
     <el-table-column show-overflow-tooltip prop="position" label="位置" :width="state.colWidth" />
@@ -47,17 +48,26 @@
 
   <el-dialog v-model="state.showEdit" :title="state.editType" class="dialog" @closed="editClosed">
     <el-form label-width="auto">
+      <el-form-item label="分组">
+        <el-select v-model="state.data.group_id" placeholder="请选择设备分组">
+          <el-option v-for="item in state.group" :label="item.name" :value="item.id" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="地址">
-        <el-input v-model="state.data.address" />
+        <el-input v-model="state.data.address" placeholder="请填写设备地址" />
       </el-form-item>
       <el-form-item label="名称">
-        <el-input v-model="state.data.name" />
+        <el-input v-model="state.data.name" placeholder="请填写设备名称" />
       </el-form-item>
       <el-form-item label="位置">
-        <el-input v-model="state.data.position" />
+        <el-input v-model="state.data.position" placeholder="请填写设备位置" />
       </el-form-item>
       <el-form-item label="信息">
-        <el-input v-model="state.data.info" type="textarea" :rows="5" />
+        <el-input
+          v-model="state.data.info"
+          type="textarea"
+          :rows="5"
+          placeholder="请填写设备信息" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -70,14 +80,19 @@
 
   <el-dialog v-model="state.showSearch" title="检索" class="dialog">
     <el-form label-width="auto">
+      <el-form-item label="分组">
+        <el-select v-model="state.search.group_id" placeholder="请选择设备分组">
+          <el-option v-for="item in state.group" :label="item.name" :value="item.id" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="地址">
-        <el-input v-model="state.search.address" />
+        <el-input v-model="state.search.address" placeholder="请填写设备地址" />
       </el-form-item>
       <el-form-item label="名称">
-        <el-input v-model="state.search.name" />
+        <el-input v-model="state.search.name" placeholder="请填写设备名称" />
       </el-form-item>
       <el-form-item label="位置">
-        <el-input v-model="state.search.position" />
+        <el-input v-model="state.search.position" placeholder="请填写设备位置" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -99,18 +114,21 @@
     list: [],
     total: 0,
     data: {
+      group_id: '',
       address: '',
       name: '',
       position: '',
       info: '',
     },
     search: {
+      group_id: '',
       address: '',
       name: '',
       position: '',
     },
     dataId: '',
     selectIds: '',
+    group: [],
     colWidth: 'auto',
     editType: '添加',
     showEdit: false,
@@ -136,6 +154,8 @@
   }
 
   onMounted(async () => {
+    const res = await http.post('/api/admin/device/group')
+    state.group = res.data.data
     await getList()
   })
 
@@ -176,6 +196,7 @@
 
   const editOk = async () => {
     let res = null
+    delete state.data.group
     if (state.editType === '添加') {
       res = await http.post('/api/admin/device/add', state.data)
     } else {

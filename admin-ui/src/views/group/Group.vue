@@ -45,7 +45,7 @@
   <el-dialog v-model="state.showEdit" :title="state.editType" class="dialog" @closed="editClosed">
     <el-form label-width="auto">
       <el-form-item label="分组名称">
-        <el-input v-model="state.data.name" />
+        <el-input v-model="state.data.name" placeholder="请填写分组名称" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -59,7 +59,7 @@
   <el-dialog v-model="state.showSearch" title="检索" class="dialog">
     <el-form label-width="auto">
       <el-form-item label="分组名称">
-        <el-input v-model="state.search.name" />
+        <el-input v-model="state.search.name" placeholder="请填写分组名称" />
       </el-form-item>
     </el-form>
     <template #footer>
