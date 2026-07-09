@@ -1,4 +1,9 @@
 <template>
+  <el-breadcrumb class="breadcrumb">
+    <el-breadcrumb-item>用户管理</el-breadcrumb-item>
+    <el-breadcrumb-item>前端用户</el-breadcrumb-item>
+  </el-breadcrumb>
+
   <div class="tools">
     <el-dropdown trigger="click" placement="bottom-start">
       <el-button type="primary">操作</el-button>

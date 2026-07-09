@@ -1,7 +1,7 @@
 <template>
   <el-breadcrumb class="breadcrumb">
-    <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-    <el-breadcrumb-item>后端用户</el-breadcrumb-item>
+    <el-breadcrumb-item>系统设置</el-breadcrumb-item>
+    <el-breadcrumb-item>项目配置</el-breadcrumb-item>
   </el-breadcrumb>
 
   <div class="tools">
@@ -19,8 +19,8 @@
 
   <el-table :data="state.list" :border="true" :stripe="true" @selection-change="selectionChange">
     <el-table-column type="selection" width="40" />
-    <el-table-column show-overflow-tooltip prop="name" label="名称" :width="state.colWidth" />
-    <el-table-column show-overflow-tooltip prop="account" label="账号" :width="state.colWidth" />
+    <el-table-column show-overflow-tooltip prop="name" label="配置名" :width="state.colWidth" />
+    <el-table-column show-overflow-tooltip prop="value" label="配置值" :width="state.colWidth" />
     <el-table-column label="操作" width="255">
       <template #default="scope">
         <el-button size="small" type="success" @click="showEdit(scope.row)">编辑</el-button>
@@ -45,14 +45,11 @@
 
   <el-dialog v-model="state.showEdit" :title="state.editType" class="dialog" @closed="editClosed">
     <el-form label-width="auto">
-      <el-form-item label="名称">
+      <el-form-item label="配置名">
         <el-input v-model="state.data.name" />
       </el-form-item>
-      <el-form-item label="账号">
-        <el-input v-model="state.data.account" :disabled="state.editType === '编辑'" />
-      </el-form-item>
-      <el-form-item label="密码">
-        <el-input v-model="state.data.password" type="password" />
+      <el-form-item label="配置值">
+        <el-input v-model="state.data.value" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -65,11 +62,11 @@
 
   <el-dialog v-model="state.showSearch" title="检索" class="dialog">
     <el-form label-width="auto">
-      <el-form-item label="名称">
+      <el-form-item label="配置名">
         <el-input v-model="state.search.name" />
       </el-form-item>
-      <el-form-item label="账号">
-        <el-input v-model="state.search.account" />
+      <el-form-item label="配置值">
+        <el-input v-model="state.search.value" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -92,12 +89,11 @@
     total: 0,
     data: {
       name: '',
-      account: '',
-      password: '',
+      value: '',
     },
     search: {
       name: '',
-      account: '',
+      value: '',
     },
     dataId: '',
     selectIds: '',
@@ -120,7 +116,7 @@
   const http = useAxios()
 
   const getList = async (page = 1) => {
-    const res = await http.post('/api/admin/admin/list', { page, search: state.search })
+    const res = await http.post('/api/admin/config/list', { page, search: state.search })
     state.total = res.data.data.total
     state.list = res.data.data.list
   }
@@ -167,9 +163,9 @@
   const editOk = async () => {
     let res = null
     if (state.editType === '添加') {
-      res = await http.post('/api/admin/admin/add', state.data)
+      res = await http.post('/api/admin/config/add', state.data)
     } else {
-      res = await http.post('/api/admin/admin/update', state.data)
+      res = await http.post('/api/admin/config/update', state.data)
     }
     await getList()
     if (res.data.success) {
@@ -181,7 +177,7 @@
   }
 
   const remove = async data => {
-    const res = await http.post('/api/admin/admin/remove', { ids: data.id })
+    const res = await http.post('/api/admin/config/remove', { ids: data.id })
     ElMessage.success(res.data.message)
     await getList()
   }
@@ -192,7 +188,7 @@
       return
     }
     await ElMessageBox.alert('确定批量删除？', '提示', { type: 'warning' })
-    const res = await http.post('/api/admin/admin/remove', { ids: state.selectIds })
+    const res = await http.post('/api/admin/config/remove', { ids: state.selectIds })
     ElMessage.success(res.data.message)
     state.selectIds = ''
     await getList()

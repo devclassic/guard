@@ -25,8 +25,8 @@ export class AdminController {
 
   @Post('add')
   async add(@Body() body: any) {
-    const admin = await this.knex.table('admin').where({ account: body.account }).first()
-    if (admin) {
+    const data = await this.knex.table('admin').where({ account: body.account }).first()
+    if (data) {
       return { success: false, message: '已经存在相同账号' }
     }
     await this.knex.table('admin').insert(body)

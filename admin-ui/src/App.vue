@@ -15,6 +15,10 @@
     background: #f5f5f5;
   }
 
+  .breadcrumb {
+    margin-bottom: 10px;
+  }
+
   .tools {
     margin-bottom: 10px;
   }

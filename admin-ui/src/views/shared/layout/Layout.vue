@@ -13,12 +13,20 @@
         :router="true"
         class="menu">
         <el-menu-item index="/home">首页</el-menu-item>
-        <el-menu-item index="/admin">后端用户</el-menu-item>
-        <el-menu-item index="/user">前端用户</el-menu-item>
+
         <el-sub-menu index="/device">
-          <template #title>设备管理</template>
+          <template #title>设备相关</template>
           <el-menu-item index="/device/group">设备分组</el-menu-item>
-          <el-menu-item index="/device/list">设备列表</el-menu-item>
+          <el-menu-item index="/device/list">设备管理</el-menu-item>
+        </el-sub-menu>
+        <el-sub-menu index="/user">
+          <template #title>用户管理</template>
+          <el-menu-item index="/user/admin">后端用户</el-menu-item>
+          <el-menu-item index="/user/user">前端用户</el-menu-item>
+        </el-sub-menu>
+        <el-sub-menu index="/system">
+          <template #title>系统设置</template>
+          <el-menu-item index="/system/config">项目配置</el-menu-item>
         </el-sub-menu>
       </el-menu>
     </div>

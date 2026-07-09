@@ -1,4 +1,9 @@
 <template>
+  <el-breadcrumb class="breadcrumb">
+    <el-breadcrumb-item>设备相关</el-breadcrumb-item>
+    <el-breadcrumb-item>设备分组</el-breadcrumb-item>
+  </el-breadcrumb>
+
   <div class="tools">
     <el-dropdown trigger="click" placement="bottom-start">
       <el-button type="primary">操作</el-button>
