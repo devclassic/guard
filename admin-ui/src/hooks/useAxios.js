@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { useUserStore } from '../stores/user'
+import { ElMessageBox } from 'element-plus'
 
 const http = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL ?? '',
@@ -17,7 +17,15 @@ http.interceptors.request.use(
 )
 
 http.interceptors.response.use(
-  response => {
+  async response => {
+    if (response.data.code === 1001) {
+      await ElMessageBox.alert('登录已经过期', '提示', {
+        type: 'warning',
+        callback() {
+          router.push('/login')
+        },
+      })
+    }
     return response
   },
   error => {

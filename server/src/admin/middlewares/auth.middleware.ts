@@ -1,5 +1,4 @@
 import { Injectable, NestMiddleware } from '@nestjs/common'
-import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 
 @Injectable()
@@ -11,7 +10,7 @@ export class AuthMiddleware implements NestMiddleware {
       req.user = user
       next()
     } catch (err) {
-      res.json({ code: -1001, success: false, message: '未登录' })
+      res.json({ code: 1001, success: false, message: '未登录' })
     }
   }
 }

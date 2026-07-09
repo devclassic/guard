@@ -17,7 +17,7 @@ export class AuthController {
       .where({ account, password })
       .first()
     if (user) {
-      const token = jwt.sign(user, process.env.SECRET as string, { expiresIn: '1y' })
+      const token = jwt.sign(user, process.env.SECRET as string, { expiresIn: '10y' })
       return { success: true, message: '登录成功', data: { token, user } }
     } else {
       return { success: false, message: '账号或密码错误' }

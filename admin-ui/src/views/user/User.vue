@@ -182,15 +182,19 @@
   }
 
   const removeAll = async () => {
+    if (!state.selectIds) {
+      ElMessage.warning('未选中任何项目')
+      return
+    }
     await ElMessageBox.alert('确定批量删除？', '提示', { type: 'warning' })
     const res = await http.post('/api/admin/user/remove', { ids: state.selectIds })
     ElMessage.success(res.data.message)
+    state.selectIds = ''
     await getList()
   }
 
   const selectionChange = items => {
-    const ids = []
-    items.forEach(item => ids.push(item.id))
+    const ids = items.map(item => item.id)
     state.selectIds = ids.join(',')
   }
 </script>
