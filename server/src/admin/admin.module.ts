@@ -5,9 +5,17 @@ import { AdminController } from './controllers/admin.controller'
 import { UserController } from './controllers/user.controller'
 import { GroupController } from './controllers/group.controller'
 import { ConfigController } from './controllers/config.controller'
+import { DeviceController } from './controllers/device.controller'
 
 @Module({
-  controllers: [AuthController, AdminController, UserController, GroupController, ConfigController],
+  controllers: [
+    AuthController,
+    AdminController,
+    UserController,
+    GroupController,
+    ConfigController,
+    DeviceController,
+  ],
 })
 export class AdminModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

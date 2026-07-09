@@ -17,7 +17,7 @@
         <el-sub-menu index="/device">
           <template #title>设备相关</template>
           <el-menu-item index="/device/group">设备分组</el-menu-item>
-          <el-menu-item index="/device/list">设备管理</el-menu-item>
+          <el-menu-item index="/device/device">设备管理</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="/user">
           <template #title>用户管理</template>

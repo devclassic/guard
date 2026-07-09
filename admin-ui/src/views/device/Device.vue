@@ -1,7 +1,7 @@
 <template>
   <el-breadcrumb class="breadcrumb">
     <el-breadcrumb-item>设备相关</el-breadcrumb-item>
-    <el-breadcrumb-item>设备分组</el-breadcrumb-item>
+    <el-breadcrumb-item>设备管理</el-breadcrumb-item>
   </el-breadcrumb>
 
   <div class="tools">
@@ -19,7 +19,10 @@
 
   <el-table :data="state.list" :border="true" :stripe="true" @selection-change="selectionChange">
     <el-table-column type="selection" width="40" />
-    <el-table-column show-overflow-tooltip prop="name" label="分组名称" :width="state.colWidth" />
+    <el-table-column show-overflow-tooltip prop="address" label="地址" :width="state.colWidth" />
+    <el-table-column show-overflow-tooltip prop="name" label="名称" :width="state.colWidth" />
+    <el-table-column show-overflow-tooltip prop="position" label="位置" :width="state.colWidth" />
+    <el-table-column show-overflow-tooltip prop="info" label="信息" :width="state.colWidth" />
     <el-table-column label="操作" width="255">
       <template #default="scope">
         <el-button size="small" type="success" @click="showEdit(scope.row)">编辑</el-button>
@@ -44,8 +47,17 @@
 
   <el-dialog v-model="state.showEdit" :title="state.editType" class="dialog" @closed="editClosed">
     <el-form label-width="auto">
-      <el-form-item label="分组名称">
+      <el-form-item label="地址">
+        <el-input v-model="state.data.address" />
+      </el-form-item>
+      <el-form-item label="名称">
         <el-input v-model="state.data.name" />
+      </el-form-item>
+      <el-form-item label="位置">
+        <el-input v-model="state.data.position" />
+      </el-form-item>
+      <el-form-item label="信息">
+        <el-input v-model="state.data.info" type="textarea" :rows="5" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -58,8 +70,14 @@
 
   <el-dialog v-model="state.showSearch" title="检索" class="dialog">
     <el-form label-width="auto">
-      <el-form-item label="分组名称">
+      <el-form-item label="地址">
+        <el-input v-model="state.search.address" />
+      </el-form-item>
+      <el-form-item label="名称">
         <el-input v-model="state.search.name" />
+      </el-form-item>
+      <el-form-item label="位置">
+        <el-input v-model="state.search.position" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -81,10 +99,15 @@
     list: [],
     total: 0,
     data: {
+      address: '',
       name: '',
+      position: '',
+      info: '',
     },
     search: {
+      address: '',
       name: '',
+      position: '',
     },
     dataId: '',
     selectIds: '',
@@ -107,7 +130,7 @@
   const http = useAxios()
 
   const getList = async (page = 1) => {
-    const res = await http.post('/api/admin/group/list', { page, search: state.search })
+    const res = await http.post('/api/admin/device/list', { page, search: state.search })
     state.total = res.data.data.total
     state.list = res.data.data.list
   }
@@ -154,9 +177,9 @@
   const editOk = async () => {
     let res = null
     if (state.editType === '添加') {
-      res = await http.post('/api/admin/group/add', state.data)
+      res = await http.post('/api/admin/device/add', state.data)
     } else {
-      res = await http.post('/api/admin/group/update', state.data)
+      res = await http.post('/api/admin/device/update', state.data)
     }
     await getList()
     if (res.data.success) {
@@ -168,7 +191,7 @@
   }
 
   const remove = async data => {
-    const res = await http.post('/api/admin/group/remove', { ids: data.id })
+    const res = await http.post('/api/admin/device/remove', { ids: data.id })
     ElMessage.success(res.data.message)
     await getList()
   }
@@ -179,7 +202,7 @@
       return
     }
     await ElMessageBox.alert('确定批量删除？', '提示', { type: 'warning' })
-    const res = await http.post('/api/admin/group/remove', { ids: state.selectIds })
+    const res = await http.post('/api/admin/device/remove', { ids: state.selectIds })
     ElMessage.success(res.data.message)
     state.selectIds = ''
     await getList()
