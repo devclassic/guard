@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { ElMessageBox } from 'element-plus'
+import router from '../router'
 
 const http = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL ?? '',

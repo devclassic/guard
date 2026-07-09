@@ -5,7 +5,7 @@ export const useUserStore = defineStore(
   'user',
   () => {
     const token = ref('')
-    const user = ref(null)
+    const user = ref({})
     return { token, user }
   },
   { persist: true },
