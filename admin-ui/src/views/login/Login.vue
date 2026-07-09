@@ -3,10 +3,10 @@
     <template #header>端点安环智控管理平台</template>
     <el-form label-width="auto">
       <el-form-item label="账号">
-        <el-input v-model="state.account" placeholder="请输入账号" />
+        <el-input v-model="state.form.account" placeholder="请输入账号" />
       </el-form-item>
       <el-form-item label="密码">
-        <el-input v-model="state.passowrd" type="password" placeholder="请输入密码" />
+        <el-input v-model="state.form.password" type="password" placeholder="请输入密码" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -22,16 +22,31 @@
   import { reactive } from 'vue'
   import { useRouter } from 'vue-router'
   import { useEventListener } from '@vueuse/core'
+  import { ElMessage } from 'element-plus'
+  import { useAxios } from '../../hooks/useAxios'
+  import { useUserStore } from '../../stores/user'
 
   const state = reactive({
-    account: '',
-    passowrd: '',
+    form: {
+      account: '',
+      password: '',
+    },
   })
 
   const router = useRouter()
+  const http = useAxios()
+  const userStore = useUserStore()
 
-  const submit = () => {
-    router.push('/home')
+  const submit = async () => {
+    const res = await http.post('/api/admin/login', state.form)
+    if (res.data.success) {
+      ElMessage.success('登录成功')
+      userStore.token = res.data.data.token
+      userStore.user = res.data.data.user
+      router.push('/home')
+    } else {
+      ElMessage.error(res.data.message)
+    }
   }
 
   useEventListener('keydown', e => {

@@ -13,15 +13,12 @@
         :router="true"
         class="menu">
         <el-menu-item index="/home">首页</el-menu-item>
-        <el-menu-item index="/example">示列页面</el-menu-item>
-        <el-sub-menu index="2">
+        <el-menu-item index="/admin">后端用户</el-menu-item>
+        <el-menu-item index="/user">前端用户</el-menu-item>
+        <el-sub-menu index="/device">
           <template #title>设备管理</template>
-          <el-menu-item index="2-1">设备分组</el-menu-item>
-          <el-menu-item index="2-2">设备列表</el-menu-item>
-        </el-sub-menu>
-        <el-sub-menu index="3">
-          <template #title>系统设置</template>
-          <el-menu-item index="3-1">用户管理</el-menu-item>
+          <el-menu-item index="/device/group">设备分组</el-menu-item>
+          <el-menu-item index="/device/list">设备列表</el-menu-item>
         </el-sub-menu>
       </el-menu>
     </div>
@@ -33,11 +30,10 @@
         </div>
         <div class="right">
           <el-dropdown trigger="click" class="user">
-            <span>管理员</span>
+            <span>{{ userStore.user.name }}</span>
             <template #dropdown>
               <el-dropdown-menu>
-                <el-dropdown-item>修改密码</el-dropdown-item>
-                <el-dropdown-item>退出登录</el-dropdown-item>
+                <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -51,9 +47,40 @@
 </template>
 
 <script setup>
-  import { reactive, watchEffect } from 'vue'
-  import { useRoute } from 'vue-router'
+  import { onUnmounted, reactive, watchEffect } from 'vue'
+  import { useRouter, useRoute } from 'vue-router'
   import { useWindowSize } from '@vueuse/core'
+  import { ElMessageBox } from 'element-plus'
+  import { useUserStore } from '../../../stores/user'
+  import { useAxios } from '../../../hooks/useAxios'
+
+  const router = useRouter()
+  const userStore = useUserStore()
+  const http = useAxios()
+
+  let checkInterval = null
+  const checkLogin = async () => {
+    const res = await http.post('/api/admin/check')
+    if (!res.data.success) {
+      clearInterval(checkInterval)
+      await ElMessageBox.alert('登录已经过期', '提示', {
+        type: 'warning',
+        callback() {
+          router.push('/login')
+        },
+      })
+    }
+  }
+  if (!userStore.token) {
+    router.push('/login')
+  } else {
+    checkLogin()
+    checkInterval = setInterval(checkLogin, 3000)
+  }
+
+  onUnmounted(() => {
+    clearInterval(checkInterval)
+  })
 
   const state = reactive({
     showMenu: true,
@@ -69,6 +96,11 @@
 
   const menu = () => {
     state.showMenu = !state.showMenu
+  }
+
+  const logout = () => {
+    localStorage.removeItem('user')
+    router.push('/login')
   }
 </script>
 
