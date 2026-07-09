@@ -67,6 +67,7 @@
   const http = useAxios()
 
   let checkInterval = null
+
   const checkLogin = async () => {
     const res = await http.post('/api/admin/check')
     if (!res.data.success) {
@@ -79,11 +80,12 @@
       })
     }
   }
+
   if (!userStore.token) {
     router.push('/login')
   } else {
     checkLogin()
-    checkInterval = setInterval(checkLogin, 3000)
+    checkInterval = setInterval(checkLogin, 2000)
   }
 
   onUnmounted(() => {

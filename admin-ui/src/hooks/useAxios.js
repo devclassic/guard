@@ -1,17 +1,20 @@
 import axios from 'axios'
 import { ElMessageBox } from 'element-plus'
+import { useUserStore } from '../stores/user'
 import router from '../router'
+
+let authAlertCount = 0
+let errorCount = 0
+
+const userStore = useUserStore()
 
 const http = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL ?? '',
 })
 
-let errorCount = 0
-
 http.interceptors.request.use(
   config => {
-    const user = JSON.parse(localStorage.getItem('user')) || {}
-    config.headers.token = user.token
+    config.headers.token = userStore.token
     return config
   },
   async error => {
@@ -21,10 +24,12 @@ http.interceptors.request.use(
 
 http.interceptors.response.use(
   async response => {
-    if (response.data.code === 1001) {
+    if (response.data.code === 1001 && authAlertCount === 0) {
+      authAlertCount++
       await ElMessageBox.alert('登录已经过期', '提示', {
         type: 'warning',
         callback() {
+          authAlertCount = 0
           router.push('/login')
         },
       })
