@@ -19,7 +19,7 @@
         </div>
       </div>
     </div>
-    <Tabbar :current="3" />
+    <Tabbar :current="2" />
   </div>
 </template>
 

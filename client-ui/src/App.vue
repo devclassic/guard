@@ -3,9 +3,50 @@
 </template>
 
 <script setup>
-  import { useRoute } from 'vue-router'
+  import { onUnmounted } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+  import { showDialog } from 'vant'
+  import { useUserStore } from './stores/user'
+  import { useAxios } from './hooks/useAxios'
 
   const route = useRoute()
+  const router = useRouter()
+  const userStore = useUserStore()
+  const http = useAxios()
+
+  let checkInterval = null
+
+  const checkLogin = async () => {
+    if (route.path === '/login') {
+      return
+    }
+    const res = await http.post('/api/client/check')
+    if (!res.data.success) {
+      clearInterval(checkInterval)
+      await showDialog({
+        title: '提示',
+        message: '登录已经过期',
+      })
+      router.push('/login')
+    }
+  }
+
+  router.beforeEach((to, from, next) => {
+    if (!userStore.token && to.path !== '/login') {
+      router.push('/login')
+    } else {
+      if (to.path === '/login') {
+        return next()
+      }
+      checkLogin()
+      checkInterval = setInterval(checkLogin, 2000)
+    }
+    next()
+  })
+
+  onUnmounted(() => {
+    clearInterval(checkInterval)
+  })
 </script>
 
 <style lang="scss">

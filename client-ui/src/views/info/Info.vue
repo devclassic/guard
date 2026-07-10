@@ -21,7 +21,7 @@
         </div>
       </div>
     </div>
-    <Tabbar :current="2" />
+    <Tabbar :current="1" />
   </div>
 </template>
 

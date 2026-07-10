@@ -6,11 +6,15 @@
       <div class="form">
         <div class="item">
           <div class="label">账号</div>
-          <input type="text" placeholder="请输入账号" class="input" />
+          <input v-model="state.form.account" type="text" placeholder="请输入账号" class="input" />
         </div>
         <div class="item">
           <div class="label">账号</div>
-          <input type="text" placeholder="请输入密码" class="input" />
+          <input
+            v-model="state.form.password"
+            type="password"
+            placeholder="请输入密码"
+            class="input" />
         </div>
       </div>
       <div @click="login" class="btn">登录</div>
@@ -21,18 +25,41 @@
 
 <script setup>
   import { useRouter } from 'vue-router'
+  import { reactive } from 'vue'
+  import { showSuccessToast, showFailToast } from 'vant'
   import { useKeyboardScroll } from '../../hooks/useKeyboardScroll'
+  import { useUserStore } from '../../stores/user'
+  import { useAxios } from '../../hooks/useAxios'
 
   useKeyboardScroll()
 
   const router = useRouter()
+  const http = useAxios()
+  const userStore = useUserStore()
 
-  const login = () => {
-    router.push('/monitor')
+  const state = reactive({
+    form: {
+      account: '',
+      password: '',
+    },
+  })
+
+  const login = async () => {
+    const res = await http.post('/api/client/login', state.form)
+    if (res.data.success) {
+      showSuccessToast('登录成功')
+      userStore.token = res.data.data.token
+      userStore.user = res.data.data.user
+      router.push('/monitor')
+    } else {
+      showFailToast(res.data.message)
+    }
   }
 
-  const guest = () => {
-    router.push('/monitor')
+  const guest = async () => {
+    state.form.account = 'test'
+    state.form.password = 'test'
+    await login()
   }
 </script>
 

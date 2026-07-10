@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ElMessageBox } from 'element-plus'
+import { showDialog } from 'vant'
 import { useUserStore } from '../stores/user'
 import router from '../router'
 
@@ -25,23 +25,23 @@ http.interceptors.response.use(
   response => {
     if (response.data.code === 1001 && authAlertCount === 0) {
       authAlertCount++
-      ElMessageBox.alert('登录已经过期', '提示', {
-        type: 'warning',
-        callback() {
-          authAlertCount = 0
-          router.push('/login')
-        },
+      showDialog({
+        title: '提示',
+        message: '登录已经过期',
+      }).then(() => {
+        authAlertCount = 0
+        router.push('/login')
       })
     }
     return response
   },
   error => {
     if (errorCount === 0) {
-      ElMessageBox.alert(error, '提示', {
-        type: 'error',
-        callback() {
-          errorCount = 0
-        },
+      showDialog({
+        title: '提示',
+        message: '登录已经过期',
+      }).then(() => {
+        errorCount = 0
       })
     }
     errorCount++
