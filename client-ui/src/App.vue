@@ -1,5 +1,7 @@
 <template>
-  <RouterViewTransition :route-key="route.path" />
+  <KeepAlive>
+    <RouterViewTransition :route-key="route.path" />
+  </KeepAlive>
 </template>
 
 <script setup>

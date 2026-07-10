@@ -56,7 +56,7 @@
             <div class="text">{{ state.menus[state.stateMenuIndex] }}</div>
           </div>
           <div class="right">
-            <div @click="open" class="btn btn1" :class="{ active: state.open }"></div>
+            <div @click="openAll" class="btn btn1" :class="{ active: state.open }"></div>
             <div
               @click="state.showMenu = !state.showMenu"
               class="btn btn2"
@@ -85,7 +85,7 @@
               </div>
               <div class="right">
                 <div class="status" :class="item.deviceStatus">{{ status[item.deviceStatus] }}</div>
-                <div @click="item.open = !item.open" class="link">
+                <div @click="open(item)" class="link">
                   <div>{{ item.open ? '收起' : '展开' }}</div>
                   <div v-if="item.open" class="open"></div>
                   <div v-else class="close"></div>
@@ -132,10 +132,12 @@
 
   const state = reactive({
     list: [],
+    listState: [],
     menus: ['全部设备', '预警状态', '告警状态', '正常运行', '离线状态', '在线设备'],
     open: false,
     groups: [],
     groupIndex: 0,
+    groupId: 0,
     stateMenuIndex: 0,
     nums: {
       normal: 0,
@@ -159,11 +161,17 @@
     offline: '离线',
   }
 
-  const open = () => {
+  const open = item => {
+    item.open = !item.open
+    state.listState = state.list.map(item => ({ open: item.open }))
+  }
+
+  const openAll = () => {
     state.open = !state.open
     state.list.forEach(item => {
       item.open = state.open
     })
+    state.listState = state.list.map(item => ({ open: item.open }))
   }
 
   const getData = async () => {
@@ -188,9 +196,12 @@
       4: 'offline',
       5: 'normal',
     }
-    state.list.forEach((item, i) => {
-      res.data.data[i].open = item.open
-    })
+    if (state.groupId === group_id) {
+      state.listState.forEach((item, i) => {
+        res.data.data[i].open = item.open
+      })
+    }
+    state.groupId = group_id
     if (state.stateMenuIndex === 0) {
       state.list = res.data.data
     } else {
@@ -231,7 +242,7 @@
     `
 
     await getData()
-    interval = setInterval(getData, 2000)
+    interval = setInterval(getData, 5000)
   })
 
   onUnmounted(() => {
@@ -587,6 +598,10 @@
                     100%;
                 }
                 &.icon4 {
+                  background: url('../../assets/images/monitor-value1.png') no-repeat center / 100%
+                    100%;
+                }
+                &.icon-2 {
                   background: url('../../assets/images/monitor-value1.png') no-repeat center / 100%
                     100%;
                 }
