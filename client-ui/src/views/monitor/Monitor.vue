@@ -3,193 +3,117 @@
     <div class="main">
       <div class="box">
         <div class="top">
-          <div class="left">济南孙村产业企业</div>
+          <div
+            @click="state.showGroup = !state.showGroup"
+            class="left"
+            :class="{ active: state.showGroup }">
+            <div class="text">{{ groupName }}</div>
+            <div class="icon"></div>
+          </div>
           <div class="right">
             <div class="search">
               <div class="text">搜索设备</div>
             </div>
-            <div class="bell"></div>
+            <div class="bell" :class="{ active: state.nums.alarming > 0 }"></div>
+          </div>
+        </div>
+        <div v-if="state.showGroup" class="group">
+          <div
+            v-for="(item, i) in state.groups"
+            class="item"
+            :class="{ active: i === state.groupIndex }"
+            @click="groupChange(i)">
+            <div class="text">{{ item.name }}</div>
+            <div class="select"></div>
           </div>
         </div>
         <div class="info">
           <div class="item">
-            <div class="num">0</div>
+            <div class="num">{{ state.nums.alarming }}</div>
             <div class="text">告警设备</div>
           </div>
           <div class="item">
-            <div class="num">81</div>
+            <div class="num">{{ state.nums.preAlarming }}</div>
+            <div class="text">预警设备</div>
+          </div>
+          <div class="item">
+            <div class="num">{{ state.nums.offline }}</div>
             <div class="text">离线设备</div>
           </div>
           <div class="item">
-            <div class="num">4</div>
+            <div class="num">{{ state.nums.normal }}</div>
             <div class="text">在线设备</div>
           </div>
           <div class="item">
-            <div class="num">85</div>
+            <div class="num">{{ state.nums.all }}</div>
             <div class="text">全部设备</div>
           </div>
         </div>
         <div class="tool">
           <div @click="state.showMenu = !state.showMenu" class="left">
             <div>设备状态</div>
-            <div class="status"></div>
-            <div class="text">正常运行</div>
+            <div class="status" :class="`icon${state.stateMenuIndex}`"></div>
+            <div class="text">{{ state.menus[state.stateMenuIndex] }}</div>
           </div>
           <div class="right">
-            <div class="btn btn1"></div>
-            <div class="btn btn2"></div>
+            <div @click="open" class="btn btn1" :class="{ active: state.open }"></div>
+            <div
+              @click="state.showMenu = !state.showMenu"
+              class="btn btn2"
+              :class="{ active: state.showMenu }"></div>
           </div>
         </div>
         <div v-show="state.showMenu" class="menu">
-          <div v-for="(item, i) in state.menus" class="item" :class="{ active: i + 1 === 4 }">
+          <div
+            v-for="(item, i) in state.menus"
+            class="item"
+            :class="{ active: i === state.stateMenuIndex }"
+            @click="stateMenuChange(i)">
             <div class="title">
-              <div class="icon" :class="`icon${i + 1}`"></div>
+              <div class="icon" :class="`icon${i}`"></div>
               <div class="text">{{ item }}</div>
             </div>
             <div class="select"></div>
           </div>
         </div>
         <div ref="list" class="list scroll">
-          <div class="item">
+          <div v-for="item in state.list" class="item">
             <div class="info1">
               <div @click="detail" class="left">
                 <img src="../../assets/images/monitor-item-icon.png" class="icon" />
-                <div class="name">传感器名称</div>
+                <div class="name">{{ item.name }}</div>
               </div>
               <div class="right">
-                <div class="status status2">离线</div>
-                <div class="link">展开 ></div>
-              </div>
-            </div>
-            <div class="info2">
-              <div class="time">更新时间：2026-04-15 13:05:49</div>
-              <div class="offline">
-                <div class="icon"></div>
-                <div class="text">设备离线，无数据</div>
-              </div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="info1">
-              <div @click="detail" class="left">
-                <img src="../../assets/images/monitor-item-icon.png" class="icon" />
-                <div class="name">传感器名称</div>
-              </div>
-              <div class="right">
-                <div class="status status1">正常</div>
-                <div class="link">展开 ></div>
-              </div>
-            </div>
-            <div class="info2">
-              <div class="time">更新时间：2026-04-15 13:05:49</div>
-              <div class="values">
-                <div class="value">
-                  <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
-                </div>
-                <div class="value">
-                  <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
-                </div>
-                <div class="value">
-                  <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
-                </div>
-                <div class="value">
-                  <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
-                </div>
-                <div class="value">
-                  <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
-                </div>
-                <div class="value">
-                  <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
+                <div class="status" :class="item.deviceStatus">{{ status[item.deviceStatus] }}</div>
+                <div @click="item.open = !item.open" class="link">
+                  <div>{{ item.open ? '收起' : '展开' }}</div>
+                  <div v-if="item.open" class="open"></div>
+                  <div v-else class="close"></div>
                 </div>
               </div>
             </div>
-          </div>
-          <div class="item">
-            <div class="info1">
-              <div @click="detail" class="left">
-                <img src="../../assets/images/monitor-item-icon.png" class="icon" />
-                <div class="name">传感器名称</div>
+            <div v-if="item.open" class="info2">
+              <div class="time">
+                更新时间：{{ format(new Date(item.timeStamp), 'yyyy-MM-dd HH:mm:ss') }}
               </div>
-              <div class="right">
-                <div class="status status1">正常</div>
-                <div class="link">展开 ></div>
-              </div>
-            </div>
-            <div class="info2">
-              <div class="time">更新时间：2026-04-15 13:05:49</div>
-              <div class="values">
-                <div class="value">
+              <template v-if="item.deviceStatus === 'offline'">
+                <div v-if="item.open" class="offline">
                   <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
+                  <div class="text">设备离线，无数据</div>
                 </div>
-                <div class="value">
-                  <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
+              </template>
+              <template v-else>
+                <div class="values">
+                  <template v-for="item1 in item.dataItem">
+                    <div v-for="item2 in item1.registerItem" class="value">
+                      <div class="icon" :class="`icon${item2.alarmLevel}`"></div>
+                      <div class="text">
+                        {{ item2.registerName }}：{{ item2.data }} {{ item2.unit }}
+                      </div>
+                    </div>
+                  </template>
                 </div>
-                <div class="value">
-                  <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
-                </div>
-                <div class="value">
-                  <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
-                </div>
-                <div class="value">
-                  <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
-                </div>
-                <div class="value">
-                  <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="info1">
-              <div @click="detail" class="left">
-                <img src="../../assets/images/monitor-item-icon.png" class="icon" />
-                <div class="name">传感器名称</div>
-              </div>
-              <div class="right">
-                <div class="status status1">正常</div>
-                <div class="link">展开 ></div>
-              </div>
-            </div>
-            <div class="info2">
-              <div class="time">更新时间：2026-04-15 13:05:49</div>
-              <div class="values">
-                <div class="value">
-                  <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
-                </div>
-                <div class="value">
-                  <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
-                </div>
-                <div class="value">
-                  <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
-                </div>
-                <div class="value">
-                  <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
-                </div>
-                <div class="value">
-                  <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
-                </div>
-                <div class="value">
-                  <div class="icon"></div>
-                  <div class="text">氧气：21.4%vol</div>
-                </div>
-              </div>
+              </template>
             </div>
           </div>
         </div>
@@ -202,25 +126,116 @@
 <script setup>
   import Tabbar from '../shared/tabbar/Tabbar.vue'
   import { useRouter } from 'vue-router'
-  import { nextTick, onMounted, reactive, useTemplateRef } from 'vue'
+  import { format } from 'date-fns'
+  import { computed, nextTick, onMounted, onUnmounted, reactive, useTemplateRef } from 'vue'
+  import { useAxios } from '../../hooks/useAxios.js'
 
   const state = reactive({
+    list: [],
     menus: ['全部设备', '预警状态', '告警状态', '正常运行', '离线状态', '在线设备'],
+    open: false,
+    groups: [],
+    groupIndex: 0,
+    stateMenuIndex: 0,
+    nums: {
+      normal: 0,
+      alarming: 0,
+      preAlarming: 0,
+      offline: 0,
+      all: 0,
+    },
     showMenu: false,
+    showGroup: false,
     listRef: useTemplateRef('list'),
   })
 
   const router = useRouter()
+  const http = useAxios()
+
+  const status = {
+    normal: '正常',
+    alarming: '报警',
+    preAlarming: '预警',
+    offline: '离线',
+  }
+
+  const open = () => {
+    state.open = !state.open
+    state.list.forEach(item => {
+      item.open = state.open
+    })
+  }
+
+  const getData = async () => {
+    let res = await http.post('/api/client/groups')
+    state.groups = res.data.data
+    if (state.groups.length === 0) {
+      return
+    }
+    const group_id = state.groups[state.groupIndex].id
+    res = await http.post('/api/client/realtime', { group_id })
+    state.nums.alarming = res.data.data.filter(item => item.deviceStatus === 'alarming').length
+    state.nums.preAlarming = res.data.data.filter(
+      item => item.deviceStatus === 'preAlarming',
+    ).length
+    state.nums.offline = res.data.data.filter(item => item.deviceStatus === 'offline').length
+    state.nums.normal = res.data.data.filter(item => item.deviceStatus === 'normal').length
+    state.nums.all = res.data.data.length
+    const status = {
+      1: 'preAlarming',
+      2: 'alarming',
+      3: 'normal',
+      4: 'offline',
+      5: 'normal',
+    }
+    state.list.forEach((item, i) => {
+      res.data.data[i].open = item.open
+    })
+    if (state.stateMenuIndex === 0) {
+      state.list = res.data.data
+    } else {
+      state.list = res.data.data.filter(item => item.deviceStatus === status[state.stateMenuIndex])
+    }
+  }
+
+  const groupName = computed(() => {
+    if (state.groups.length === 0) {
+      return ''
+    }
+    return state.groups[state.groupIndex].name
+  })
+
+  const groupChange = async i => {
+    state.groupIndex = i
+    await getData()
+    state.showGroup = false
+  }
+
+  const stateMenuChange = async i => {
+    state.stateMenuIndex = i
+    await getData()
+    state.showMenu = false
+  }
+
+  let interval = null
 
   onMounted(async () => {
     await nextTick()
     const rect = state.listRef.getBoundingClientRect()
     state.listRef.style.cssText = `
       margin-top: 0;
+      width: 6.9rem;
       position: absolute;
       top: ${rect.top}px;
       bottom: 0;
     `
+
+    await getData()
+    interval = setInterval(getData, 2000)
+  })
+
+  onUnmounted(() => {
+    clearInterval(interval)
   })
 
   const detail = () => {
@@ -239,6 +254,23 @@
       .left {
         font-size: 0.3rem;
         font-weight: bold;
+        display: flex;
+        align-items: center;
+        &.active {
+          color: #005cdd;
+        }
+        .icon {
+          width: 0.15rem;
+          height: 0.1rem;
+          background: url('../../assets/images/monitor-group-icon.png') no-repeat center / 100% 100%;
+          margin-left: 0.1rem;
+        }
+        &.active {
+          .icon {
+            background: url('../../assets/images/monitor-group-icon-a.png') no-repeat center / 100%
+              100%;
+          }
+        }
       }
       .right {
         display: flex;
@@ -258,6 +290,10 @@
           height: 0.4rem;
           background: url('../../assets/images/monitor-bell.png') no-repeat top center / 100% 100%;
           margin-left: 0.2rem;
+          &.active {
+            background: url('../../assets/images/monitor-bell-a.png') no-repeat top center / 100%
+              100%;
+          }
         }
       }
     }
@@ -293,7 +329,6 @@
           width: 0.4rem;
           height: 0.4rem;
           margin-left: 0.3rem;
-          background: url('../../assets/images/monitor-status.png') no-repeat center / 100% 100%;
         }
         .text {
           margin-left: 0.1rem;
@@ -308,12 +343,78 @@
         .btn1 {
           background: url('../../assets/images/monitor-tool1.png') no-repeat center / 100% 100%;
           margin-right: 0.2rem;
+          &.active {
+            background: url('../../assets/images/monitor-tool1a.png') no-repeat center / 100% 100%;
+          }
         }
         .btn2 {
           background: url('../../assets/images/monitor-tool2.png') no-repeat center / 100% 100%;
+          &.active {
+            background: url('../../assets/images/monitor-tool2a.png') no-repeat center / 100% 100%;
+          }
         }
       }
     }
+
+    .icon0 {
+      background: url('../../assets/images/monitor-status1.png') no-repeat center / 100% 100%;
+    }
+    .icon1 {
+      background: url('../../assets/images/monitor-status2.png') no-repeat center / 100% 100%;
+    }
+    .icon2 {
+      background: url('../../assets/images/monitor-status3.png') no-repeat center / 100% 100%;
+    }
+    .icon3 {
+      background: url('../../assets/images/monitor-status4.png') no-repeat center / 100% 100%;
+    }
+    .icon4 {
+      background: url('../../assets/images/monitor-status5.png') no-repeat center / 100% 100%;
+      width: 0.35rem !important;
+      height: 0.481rem !important;
+    }
+    .icon5 {
+      background: url('../../assets/images/monitor-status6.png') no-repeat center / 100% 100%;
+    }
+
+    .group {
+      width: 100%;
+      margin-top: 0.1rem;
+      position: absolute;
+      left: 0;
+      z-index: 100;
+      background: #ffffff;
+      padding-left: 0.3rem;
+      .item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 1rem;
+        border-bottom: 1px solid #e8e8e8;
+        padding-right: 0.3rem;
+        .text {
+          font-size: 0.3rem;
+        }
+        .select {
+          width: 0.3rem;
+          height: 0.26rem;
+          background: url('../../assets/images/monitor-status-a.png') no-repeat center / 100% 100%;
+          display: none;
+        }
+        &:last-child {
+          border: 0;
+        }
+        &.active {
+          .select {
+            display: block;
+          }
+          .text {
+            color: #005cdd;
+          }
+        }
+      }
+    }
+
     .menu {
       width: 100%;
       margin-top: 0.1rem;
@@ -335,26 +436,6 @@
           .icon {
             width: 0.4rem;
             height: 0.4rem;
-          }
-          .icon1 {
-            background: url('../../assets/images/monitor-status1.png') no-repeat center / 100% 100%;
-          }
-          .icon2 {
-            background: url('../../assets/images/monitor-status2.png') no-repeat center / 100% 100%;
-          }
-          .icon3 {
-            background: url('../../assets/images/monitor-status3.png') no-repeat center / 100% 100%;
-          }
-          .icon4 {
-            background: url('../../assets/images/monitor-status4.png') no-repeat center / 100% 100%;
-          }
-          .icon5 {
-            background: url('../../assets/images/monitor-status5.png') no-repeat center / 100% 100%;
-            width: 0.4rem;
-            height: 0.55rem;
-          }
-          .icon6 {
-            background: url('../../assets/images/monitor-status6.png') no-repeat center / 100% 100%;
           }
           .text {
             margin-left: 0.3rem;
@@ -413,22 +494,41 @@
               display: flex;
               justify-content: center;
               align-items: center;
-              &.status1 {
+              &.normal {
                 background: #ddf7f6;
                 color: #02c3bc;
               }
-              &.status2 {
-                background: #f5f5f5;
-                color: #cccccc;
-              }
-              &.status3 {
+              &.alarming {
                 background: #ffe2e6;
                 color: #ff2742;
+              }
+              &.preAlarming {
+                background: #feeedb;
+                color: #fa9722;
+              }
+              &.offline {
+                background: #f5f5f5;
+                color: #cccccc;
               }
             }
             .link {
               font-size: 0.24rem;
               color: #005cdd;
+              display: flex;
+              align-items: center;
+              .close {
+                width: 0.1rem;
+                height: 0.2rem;
+                margin-left: 0.08rem;
+                background: url('../../assets/images/monitor-close.png') no-repeat center / 100%
+                  100%;
+              }
+              .open {
+                width: 0.18rem;
+                height: 0.1rem;
+                margin-left: 0.08rem;
+                background: url('../../assets/images/monitor-open.png') no-repeat center / 100% 100%;
+              }
             }
           }
         }
@@ -469,8 +569,27 @@
               .icon {
                 width: 0.3rem;
                 height: 0.3rem;
-                background: url('../../assets/images/monitor-value.png') no-repeat center / 100%
-                  100%;
+                flex-shrink: 0;
+                &.icon0 {
+                  background: url('../../assets/images/monitor-value0.png') no-repeat center / 100%
+                    100%;
+                }
+                &.icon1 {
+                  background: url('../../assets/images/monitor-value1.png') no-repeat center / 100%
+                    100%;
+                }
+                &.icon2 {
+                  background: url('../../assets/images/monitor-value2.png') no-repeat center / 100%
+                    100%;
+                }
+                &.icon3 {
+                  background: url('../../assets/images/monitor-value2.png') no-repeat center / 100%
+                    100%;
+                }
+                &.icon4 {
+                  background: url('../../assets/images/monitor-value1.png') no-repeat center / 100%
+                    100%;
+                }
               }
               .text {
                 font-size: 0.26rem;

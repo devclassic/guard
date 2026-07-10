@@ -39,7 +39,7 @@ http.interceptors.response.use(
     if (errorCount === 0) {
       showDialog({
         title: '提示',
-        message: '登录已经过期',
+        message: error,
       }).then(() => {
         errorCount = 0
       })
