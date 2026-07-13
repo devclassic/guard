@@ -236,15 +236,15 @@
   })
 
   const groupChange = async i => {
+    state.showGroup = false
     state.groupIndex = i
     await getData()
-    state.showGroup = false
   }
 
   const stateMenuChange = async i => {
+    state.showMenu = false
     state.stateMenuIndex = i
     await getData()
-    state.showMenu = false
   }
 
   let interval = null
