@@ -37,9 +37,9 @@
 
 <script setup>
   import { useRouter } from 'vue-router'
-  import { showToast } from 'vant'
+  import { showToast, showLoadingToast, closeToast } from 'vant'
   import { useAxios } from '../../hooks/useAxios'
-  import { onMounted, onUnmounted, reactive } from 'vue'
+  import { nextTick, onMounted, onUnmounted, reactive } from 'vue'
   import { format } from 'date-fns'
   import { useAlarmStore } from '../../stores/alarm'
 
@@ -61,13 +61,18 @@
   const http = useAxios()
   const alarmStore = useAlarmStore()
 
-  const getData = async () => {
+  const getData = async (cb = null) => {
     const res = await http.post('/api/client/alarms')
     state.list = res.data.data
+    await nextTick()
+    cb && cb()
   }
 
   onMounted(async () => {
-    await getData()
+    showLoadingToast({ message: '加载中' })
+    await getData(() => {
+      closeToast()
+    })
     interval = setInterval(getData, 5000)
   })
 

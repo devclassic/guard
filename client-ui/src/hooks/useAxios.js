@@ -1,4 +1,5 @@
 import axios from 'axios'
+import retry from 'axios-retry'
 import { showDialog } from 'vant'
 import { useUserStore } from '../stores/user'
 import router from '../router'
@@ -9,6 +10,8 @@ let errorCount = 0
 const http = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL ?? '',
 })
+
+retry(http, { retries: Infinity, retryDelay: retry.exponentialDelay })
 
 http.interceptors.request.use(
   config => {
