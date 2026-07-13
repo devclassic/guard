@@ -32,9 +32,7 @@
           </template>
         </div>
         <div v-if="alarmStore.info.alarmLevel !== -1 && state.md" class="info">
-          <markdown-preview
-            :source="state.md"
-            style="background: transparent; padding: 0; margin: 0" />
+          <markdown-preview :source="state.md" class="md" />
         </div>
       </div>
     </div>
@@ -256,6 +254,12 @@
         font-size: 0.26rem;
         color: #222222;
         line-height: 1.5;
+        .md {
+          background: transparent;
+          padding: 0;
+          margin: 0;
+          font-size: 0.26rem;
+        }
       }
     }
   }
