@@ -1,12 +1,23 @@
 import axios, { AxiosInstance } from 'axios'
+import { getUnixTime } from 'date-fns'
 
-const token = async () => {
+let store = {
+  expiration: 0,
+  token: '',
+}
+
+export const token = async () => {
+  const expiration = store.expiration - 60 * 20
+  if (expiration > getUnixTime(new Date())) {
+    return store.token
+  }
   const params = {
     loginName: process.env.PLATFORM_ACCOUNT,
     password: process.env.PLATFORM_PASSWORD,
   }
   const res = await axios.get(`${process.env.PLATFORM_BASE_URL}/api/getToken`, { params })
-  return res.data.data.token
+  store = res.data.data
+  return store.token
 }
 
 let instance: AxiosInstance | null = null

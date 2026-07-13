@@ -1,6 +1,11 @@
 <template>
-  <KeepAlive>
-    <RouterViewTransition :route-key="route.path" />
+  <KeepAlive :include="['monitor']">
+    <RouterViewTransition
+      :route-key="route.path"
+      :keep-alive="true"
+      :keep-alive-attrs="{
+        include: ['monitor'],
+      }" />
   </KeepAlive>
 </template>
 

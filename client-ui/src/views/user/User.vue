@@ -5,14 +5,20 @@
     <div class="list">
       <div class="item">
         <div class="wrap">
+          <div class="left">名称</div>
+          <div class="right">{{ userStore.user.name }}</div>
+        </div>
+      </div>
+      <div class="item">
+        <div class="wrap">
           <div class="left">账号</div>
-          <div class="right">woaiwhr001</div>
+          <div class="right">{{ userStore.user.account }}</div>
         </div>
       </div>
       <div class="item">
         <div class="wrap nb">
           <div class="left">销售</div>
-          <div class="right">王浩冉 13847253707</div>
+          <div class="right">{{ state.config['销售'] }}</div>
         </div>
       </div>
       <div @click="repass" class="item mt">
@@ -31,17 +37,34 @@
 <script setup>
   import { useRouter } from 'vue-router'
   import { showToast } from 'vant'
+  import { onMounted, reactive } from 'vue'
+  import { useAxios } from '../../hooks/useAxios.js'
+  import { useUserStore } from '../../stores/user.js'
+
+  const state = reactive({
+    config: {},
+  })
 
   const router = useRouter()
+  const http = useAxios()
+  const userStore = useUserStore()
+
+  onMounted(async () => {
+    const res = await http.post('/api/client/config')
+    res.data.data.forEach(item => {
+      state.config[item.name] = item.value
+    })
+  })
 
   const repass = () => {
     showToast({
-      message: '请联系平台销售修改',
+      message: '请联系平台修改',
       duration: 3000,
     })
   }
 
   const logout = () => {
+    localStorage.removeItem('user')
     router.push('/login')
   }
 </script>

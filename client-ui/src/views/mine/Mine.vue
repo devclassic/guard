@@ -27,8 +27,22 @@
   import Tabbar from '../shared/tabbar/Tabbar.vue'
   import { useRouter } from 'vue-router'
   import { showToast } from 'vant'
+  import { onMounted, reactive } from 'vue'
+  import { useAxios } from '../../hooks/useAxios.js'
+
+  const state = reactive({
+    config: {},
+  })
 
   const router = useRouter()
+  const http = useAxios()
+
+  onMounted(async () => {
+    const res = await http.post('/api/client/config')
+    res.data.data.forEach(item => {
+      state.config[item.name] = item.value
+    })
+  })
 
   const user = () => {
     router.push('/user')
@@ -36,14 +50,14 @@
 
   const version = () => {
     showToast({
-      message: '当前版本为内部开发版',
+      message: `${state.config['版本']}`,
       duration: 3000,
     })
   }
 
   const help = () => {
     showToast({
-      message: '进入个人中心获取平台销售联系方式',
+      message: `${state.config['帮助']}`,
       duration: 3000,
     })
   }

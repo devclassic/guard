@@ -41,7 +41,7 @@
             <div class="text">离线设备</div>
           </div>
           <div class="item">
-            <div class="num">{{ state.nums.normal }}</div>
+            <div class="num">{{ state.nums.online }}</div>
             <div class="text">在线设备</div>
           </div>
           <div class="item">
@@ -125,10 +125,24 @@
 
 <script setup>
   import Tabbar from '../shared/tabbar/Tabbar.vue'
-  import { useRouter } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import { format } from 'date-fns'
-  import { computed, nextTick, onMounted, onUnmounted, reactive, useTemplateRef } from 'vue'
+  import {
+    computed,
+    nextTick,
+    onActivated,
+    onDeactivated,
+    onMounted,
+    onUnmounted,
+    reactive,
+    useTemplateRef,
+  } from 'vue'
   import { useAxios } from '../../hooks/useAxios.js'
+  import { useTabbarStore } from '../../stores/tabbar.js'
+
+  defineOptions({
+    name: 'monitor',
+  })
 
   const state = reactive({
     list: [],
@@ -151,8 +165,14 @@
     listRef: useTemplateRef('list'),
   })
 
+  const route = useRoute()
   const router = useRouter()
   const http = useAxios()
+  const tabbarStore = useTabbarStore()
+
+  if (route.query.state) {
+    state.stateMenuIndex = route.query.state
+  }
 
   const status = {
     normal: '正常',
@@ -176,36 +196,35 @@
 
   const getData = async () => {
     let res = await http.post('/api/client/groups')
-    state.groups = res.data.data
-    if (state.groups.length === 0) {
-      return
-    }
+    state.groups = [{ id: 0, name: '全部分组' }, ...res.data.data]
     const group_id = state.groups[state.groupIndex].id
     res = await http.post('/api/client/realtime', { group_id })
-    state.nums.alarming = res.data.data.filter(item => item.deviceStatus === 'alarming').length
-    state.nums.preAlarming = res.data.data.filter(
-      item => item.deviceStatus === 'preAlarming',
-    ).length
-    state.nums.offline = res.data.data.filter(item => item.deviceStatus === 'offline').length
-    state.nums.normal = res.data.data.filter(item => item.deviceStatus === 'normal').length
-    state.nums.all = res.data.data.length
+    const list = res.data.data
+    state.nums.alarming = list.filter(item => item.deviceStatus === 'alarming').length
+    state.nums.preAlarming = list.filter(item => item.deviceStatus === 'preAlarming').length
+    state.nums.offline = list.filter(item => item.deviceStatus === 'offline').length
+    state.nums.online = list.filter(item => item.deviceStatus !== 'offline').length
+    state.nums.all = list.length
     const status = {
       1: 'preAlarming',
       2: 'alarming',
       3: 'normal',
       4: 'offline',
-      5: 'normal',
     }
     if (state.groupId === group_id) {
       state.listState.forEach((item, i) => {
-        res.data.data[i].open = item.open
+        list[i].open = item.open
       })
     }
     state.groupId = group_id
     if (state.stateMenuIndex === 0) {
-      state.list = res.data.data
+      state.list = list
     } else {
-      state.list = res.data.data.filter(item => item.deviceStatus === status[state.stateMenuIndex])
+      if (state.stateMenuIndex === 5) {
+        state.list = list.filter(item => item.deviceStatus !== 'offline')
+      } else {
+        state.list = list.filter(item => item.deviceStatus === status[state.stateMenuIndex])
+      }
     }
   }
 
@@ -246,6 +265,21 @@
   })
 
   onUnmounted(() => {
+    clearInterval(interval)
+  })
+
+  onActivated(async () => {
+    tabbarStore.current = 0
+
+    if (route.query.state) {
+      state.stateMenuIndex = route.query.state
+    }
+
+    await getData()
+    interval = setInterval(getData, 5000)
+  })
+
+  onDeactivated(() => {
     clearInterval(interval)
   })
 

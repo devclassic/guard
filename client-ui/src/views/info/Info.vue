@@ -11,7 +11,7 @@
               <div class="info">设备名称1出现气体泄漏，请尽快处理</div>
             </div>
           </div>
-          <div @click="router.push('/monitor')" class="item">
+          <div @click="router.push({ path: '/monitor', query: { state: 4 } })" class="item">
             <img src="../../assets/images/info-bell2.png" class="icon" />
             <div class="text">
               <div class="title">离线通知</div>
