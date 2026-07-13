@@ -3,43 +3,33 @@
     <div @click="router.back" class="page-back"></div>
     <div class="page-title">告警记录</div>
     <div class="list scroll">
-      <div @click="detail" class="item">
+      <div v-for="item in state.list" @click="detail(item)" class="item">
         <div class="status">
           <div class="left">
-            <div class="status1">待处理</div>
-            <div class="status2">告警</div>
+            <div class="status1" :class="{ active: item.read }">
+              {{ item.read ? '已处理' : '待处理' }}
+            </div>
+            <div class="status2" :class="`status2${item.alarmLevel}`">
+              {{ status[item.alarmLevel] }}
+            </div>
           </div>
-          <div class="right">2026-04-16 13:05:49</div>
+          <div class="right">{{ format(new Date(item.recordTime), 'yyyy-MM-dd HH:mm:ss') }}</div>
         </div>
         <div class="name">
           <img src="../../assets/images/monitor-item-icon.png" class="icon" />
-          <div>传感器名称</div>
+          <div>{{ item.name }}</div>
         </div>
         <div class="pos">
           <div class="icon"></div>
-          <div class="text">设备位置：工厂西北角锅炉</div>
+          <div class="text">{{ item.pos }}</div>
         </div>
-        <div class="factor">甲烷(PPM)：1121.00 PPM</div>
-        <div class="info">告警：AI告警判断原因和处理方案。尽量让ai处理在 30个字符内。</div>
-      </div>
-      <div class="item">
-        <div class="status">
-          <div class="left">
-            <div class="status1 active">已处理</div>
-            <div class="status2">告警</div>
-          </div>
-          <div class="right">2026-04-16 13:05:49</div>
+        <div class="factor">
+          <template v-if="item.alarmLevel === -1">设备离线</template>
+          <template v-else>{{ item.factorName }}：{{ item.dataValue }}</template>
         </div>
-        <div class="name">
-          <img src="../../assets/images/monitor-item-icon.png" class="icon" />
-          <div>传感器名称</div>
+        <div v-if="false" class="info">
+          告警：AI告警判断原因和处理方案。尽量让ai处理在 30个字符内。
         </div>
-        <div class="pos">
-          <div class="icon"></div>
-          <div class="text">设备位置：工厂西北角锅炉</div>
-        </div>
-        <div class="factor">甲烷(PPM)：1121.00 PPM</div>
-        <div class="info">告警：AI告警判断原因和处理方案。尽量让ai处理在 30个字符内。</div>
       </div>
     </div>
   </div>
@@ -48,10 +38,45 @@
 <script setup>
   import { useRouter } from 'vue-router'
   import { showToast } from 'vant'
+  import { useAxios } from '../../hooks/useAxios'
+  import { onMounted, onUnmounted, reactive } from 'vue'
+  import { format } from 'date-fns'
+  import { useAlarmStore } from '../../stores/alarm'
 
+  const state = reactive({
+    list: [],
+  })
+
+  const status = {
+    '1': '告警',
+    '2': '预警',
+    '3': '预警',
+    '4': '告警',
+    '-1': '离线',
+    '-2': '告警',
+  }
+
+  let interval = null
   const router = useRouter()
+  const http = useAxios()
+  const alarmStore = useAlarmStore()
 
-  const detail = () => {
+  const getData = async () => {
+    const res = await http.post('/api/client/alarms')
+    state.list = res.data.data
+  }
+
+  onMounted(async () => {
+    await getData()
+    interval = setInterval(getData, 5000)
+  })
+
+  onUnmounted(() => {
+    clearInterval(interval)
+  })
+
+  const detail = item => {
+    alarmStore.info = item
     router.push('/alarm/detail')
   }
 </script>
@@ -121,6 +146,30 @@
             justify-content: center;
             align-items: center;
             margin-left: 0.2rem;
+            &.status21 {
+              background: #ffe2e6;
+              color: #ff2742;
+            }
+            &.status22 {
+              background: #feeedb;
+              color: #fa9722;
+            }
+            &.status23 {
+              background: #feeedb;
+              color: #fa9722;
+            }
+            &.status24 {
+              background: #ffe2e6;
+              color: #ff2742;
+            }
+            &.status2-1 {
+              background: #f5f5f5;
+              color: #cccccc;
+            }
+            &.status2-2 {
+              background: #ffe2e6;
+              color: #ff2742;
+            }
           }
         }
         .right {

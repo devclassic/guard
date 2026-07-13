@@ -10,7 +10,7 @@ export class ClientModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .exclude('api/client/login', 'api/client/check', 'api/client/test')
+      .exclude('api/client/test', 'api/client/login', 'api/client/check')
       .forRoutes('api/client')
   }
 }

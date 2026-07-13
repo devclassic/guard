@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from 'axios'
 import { getUnixTime } from 'date-fns'
+import retry from 'axios-retry'
 
 let store = {
   expiration: 0,
@@ -27,6 +28,8 @@ export const useHttp = () => {
     instance = axios.create({
       baseURL: process.env.PLATFORM_BASE_URL,
     })
+
+    retry(instance, { retries: Infinity, retryDelay: retry.exponentialDelay })
 
     instance.interceptors.request.use(
       async config => {

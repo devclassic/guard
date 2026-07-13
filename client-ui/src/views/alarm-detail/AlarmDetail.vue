@@ -6,26 +6,53 @@
       <div class="item">
         <div class="status">
           <div class="left">
-            <div class="status1">待处理</div>
-            <div class="status2">告警</div>
+            <div class="status1" :class="{ active: alarmStore.info.read }">
+              {{ alarmStore.info.read ? '已处理' : '待处理' }}
+            </div>
+            <div class="status2" :class="`status2${alarmStore.info.alarmLevel}`">
+              {{ status[alarmStore.info.alarmLevel] }}
+            </div>
           </div>
-          <div class="right">2026-04-16 13:05:49</div>
+          <div class="right">
+            {{ format(new Date(alarmStore.info.recordTime), 'yyyy-MM-dd HH:mm:ss') }}
+          </div>
         </div>
         <div class="name">
           <img src="../../assets/images/monitor-item-icon.png" class="icon" />
-          <div>传感器名称</div>
+          <div>{{ alarmStore.info.name }}</div>
         </div>
         <div class="pos">
           <div class="icon"></div>
-          <div class="text">设备位置：工厂西北角锅炉</div>
+          <div class="text">{{ alarmStore.info.pos }}</div>
         </div>
-        <div class="factor">甲烷(PPM)：1121.00 PPM</div>
-        <div class="info">告警：AI告警判断原因和处理方案。尽量让ai处理在 30个字符内。</div>
+        <div class="factor">
+          <template v-if="alarmStore.info.alarmLevel === -1">设备离线</template>
+          <template v-else>
+            {{ alarmStore.info.factorName }}：{{ alarmStore.info.dataValue }}
+          </template>
+        </div>
+        <div v-if="alarmStore.info.alarmLevel !== -1 && state.md" class="info">
+          <markdown-preview
+            :source="state.md"
+            style="background: transparent; padding: 0; margin: 0" />
+        </div>
       </div>
     </div>
-    <div class="bottombar">
-      <div class="ai">AI分析</div>
-      <div class="btn">已处理</div>
+    <div v-if="!(alarmStore.info.read && alarmStore.info.alarmLevel === -1)" class="bottombar">
+      <div
+        v-if="alarmStore.info.alarmLevel !== -1"
+        @click="ai"
+        class="ai"
+        :class="{ noread: alarmStore.info.read }">
+        AI分析
+      </div>
+      <div
+        v-if="!alarmStore.info.read"
+        @click="read"
+        class="btn"
+        :class="{ noai: alarmStore.info.alarmLevel === -1 }">
+        已处理
+      </div>
     </div>
   </div>
 </template>
@@ -33,8 +60,67 @@
 <script setup>
   import { useRouter } from 'vue-router'
   import { showToast } from 'vant'
+  import { useAlarmStore } from '../../stores/alarm'
+  import { useUserStore } from '../../stores/user'
+  import { format } from 'date-fns'
+  import { useAxios } from '../../hooks/useAxios'
+  import { reactive } from 'vue'
+  import { fetchEventSource } from '@microsoft/fetch-event-source'
+  import MarkdownPreview from '@uivjs/vue-markdown-preview'
+  import '@uivjs/vue-markdown-preview/markdown.css'
+
+  const state = reactive({
+    md: '',
+  })
 
   const router = useRouter()
+  const http = useAxios()
+  const alarmStore = useAlarmStore()
+  const userStore = useUserStore()
+
+  const status = {
+    '1': '告警',
+    '2': '预警',
+    '3': '预警',
+    '4': '告警',
+    '-1': '离线',
+    '-2': '告警',
+  }
+
+  const ai = async () => {
+    state.md = '正在思考...'
+    let result = ''
+    const base = import.meta.env.VITE_BASE_URL ?? ''
+    const ctrl = new AbortController()
+    fetchEventSource(`${base}/api/client/ai`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'token': userStore.token,
+      },
+      body: JSON.stringify({ info: alarmStore.info }),
+      signal: ctrl.signal,
+      onmessage(event) {
+        if (!event.data) return
+        try {
+          const parsed = JSON.parse(event.data)
+          if (parsed.content) {
+            result += parsed.content
+            state.md = result
+          } else if (parsed.done) {
+            result = ''
+          }
+        } catch (e) {}
+      },
+    })
+  }
+
+  const read = async () => {
+    const res = await http.post('/api/client/read', { record_id: alarmStore.info.recordId })
+    if (res.data.success) {
+      alarmStore.info.read = true
+    }
+  }
 </script>
 
 <style scoped lang="scss">
@@ -103,6 +189,30 @@
             justify-content: center;
             align-items: center;
             margin-left: 0.2rem;
+            &.status21 {
+              background: #ffe2e6;
+              color: #ff2742;
+            }
+            &.status22 {
+              background: #feeedb;
+              color: #fa9722;
+            }
+            &.status23 {
+              background: #feeedb;
+              color: #fa9722;
+            }
+            &.status24 {
+              background: #ffe2e6;
+              color: #ff2742;
+            }
+            &.status2-1 {
+              background: #f5f5f5;
+              color: #cccccc;
+            }
+            &.status2-2 {
+              background: #ffe2e6;
+              color: #ff2742;
+            }
           }
         }
         .right {
@@ -170,6 +280,9 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      &.noread {
+        width: 90%;
+      }
     }
     .btn {
       width: 4.37rem;
@@ -180,6 +293,10 @@
       color: #ffffff;
       background: url('../../assets/images/alarm-detail-btn.png') no-repeat center / 100% 100%;
       margin-left: 0.2rem;
+      &.noai {
+        width: 90%;
+        margin-left: 0;
+      }
     }
   }
 </style>
