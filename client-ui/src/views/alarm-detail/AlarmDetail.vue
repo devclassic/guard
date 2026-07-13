@@ -86,7 +86,7 @@
   }
 
   const ai = async () => {
-    state.md = '正在思考...'
+    state.md = '思考分析中...'
     let result = ''
     const base = import.meta.env.VITE_BASE_URL ?? ''
     const ctrl = new AbortController()
