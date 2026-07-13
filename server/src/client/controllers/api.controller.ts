@@ -78,7 +78,7 @@ export class ApiController {
       item.info = device.info
       item.read = alarm ? !!alarm.read : false
     })
-
+    data.sort((a, b) => Number(a.read) - Number(b.read))
     return { success: true, message: '获取告警列表成功', data }
   }
 
