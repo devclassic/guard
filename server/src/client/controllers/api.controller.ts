@@ -45,6 +45,13 @@ export class ApiController {
     const res = await Promise.all(reqs)
     const alarms: any[] = []
     res.forEach(items => alarms.push(...items))
+    const localAlarms = await this.knex.table('alarm')
+    alarms.forEach((item, i) => {
+      const alarm = localAlarms.find(x => item.recordId === x.record_id)
+      if (alarm) {
+        alarms.splice(i, 1)
+      }
+    })
 
     addrs = addrs.map(item => item.address)
     const remoteDevices = await platform.getRealTimeDataByDeviceAddr(addrs.join(','))

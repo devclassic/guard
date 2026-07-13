@@ -45,7 +45,7 @@
   const getData = async () => {
     const res = await http.post('/api/client/info')
     const info = res.data.data
-    state.info.alarm = `当前共 ${info.alarm} 条设备告警`
+    state.info.alarm = `当前共 ${info.alarm} 条告警未处理`
     state.info.offline = `当前共 ${info.offline} 个设备离线`
   }
 
