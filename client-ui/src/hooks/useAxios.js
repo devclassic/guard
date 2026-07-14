@@ -11,7 +11,7 @@ const http = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL ?? '',
 })
 
-retry(http, { retries: Infinity, retryDelay: retry.exponentialDelay })
+retry(http, { retries: Infinity, retryDelay: retry.linearDelay(500) })
 
 http.interceptors.request.use(
   config => {

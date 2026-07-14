@@ -51,7 +51,7 @@
 
   onMounted(async () => {
     await getData()
-    interval = setInterval(getData, 5000)
+    interval = setInterval(getData, 30000)
   })
 
   onUnmounted(() => {
