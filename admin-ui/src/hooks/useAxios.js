@@ -1,7 +1,10 @@
 import axios from 'axios'
 import { ElMessageBox } from 'element-plus'
 import { useUserStore } from '../stores/user'
-import router from '../router'
+import { useRoute, useRouter } from 'vue-router'
+
+const route = useRoute()
+const router = useRouter()
 
 let authAlertCount = 0
 let errorCount = 0
@@ -23,7 +26,7 @@ http.interceptors.request.use(
 
 http.interceptors.response.use(
   response => {
-    if (response.data.code === 1001 && authAlertCount === 0) {
+    if (response.data.code === 1001 && authAlertCount === 0 && route.path !== '/login') {
       authAlertCount++
       ElMessageBox.alert('登录已经过期', '提示', {
         type: 'warning',
