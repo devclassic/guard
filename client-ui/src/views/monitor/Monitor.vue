@@ -211,6 +211,7 @@
 
   const searchSubmit = async () => {
     state.showSearch = false
+    state.searchRef.blur()
     await getData()
   }
 
@@ -222,6 +223,7 @@
   const cancel = async () => {
     state.search = ''
     state.showSearch = false
+    state.searchRef.blur()
     await getData()
   }
 
