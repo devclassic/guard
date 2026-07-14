@@ -1,5 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { AuthMiddleware } from './middlewares/auth.middleware'
+import { HomeController } from './controllers/home.controller'
 import { AuthController } from './controllers/auth.controller'
 import { AdminController } from './controllers/admin.controller'
 import { UserController } from './controllers/user.controller'
@@ -10,6 +11,7 @@ import { DeviceController } from './controllers/device.controller'
 @Module({
   controllers: [
     AuthController,
+    HomeController,
     AdminController,
     UserController,
     GroupController,
