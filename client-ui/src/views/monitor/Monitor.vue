@@ -20,6 +20,7 @@
         <div v-if="state.showGroup" class="group">
           <div
             v-for="(item, i) in state.groups"
+            :key="item.id"
             class="item"
             :class="{ active: i === state.groupIndex }"
             @click="groupChange(i)">
@@ -66,6 +67,7 @@
         <div v-show="state.showMenu" class="menu">
           <div
             v-for="(item, i) in state.menus"
+            :key="item"
             class="item"
             :class="{ active: i === state.stateMenuIndex }"
             @click="stateMenuChange(i)">
@@ -77,7 +79,7 @@
           </div>
         </div>
         <div ref="list" class="list scroll">
-          <div v-for="item in state.list" class="item">
+          <div v-for="item in state.list" :key="item.addr" class="item">
             <div class="info1">
               <div @click="detail" class="left">
                 <img src="../../assets/images/monitor-item-icon.png" class="icon" />
@@ -104,8 +106,8 @@
               </template>
               <template v-else>
                 <div class="values">
-                  <template v-for="item1 in item.dataItem">
-                    <div v-for="item2 in item1.registerItem" class="value">
+                  <template v-for="item1 in item.dataItem" :key="item1.nodeId">
+                    <div v-for="item2 in item1.registerItem" :key="item2.registerId" class="value">
                       <div class="icon" :class="`icon${item2.alarmLevel}`"></div>
                       <div class="text">
                         {{ item2.registerName }}：{{ item2.data }} {{ item2.unit }}

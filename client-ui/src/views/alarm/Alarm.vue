@@ -3,7 +3,7 @@
     <div @click="router.back" class="page-back"></div>
     <div class="page-title">告警记录</div>
     <div class="list scroll">
-      <div v-for="item in state.list" @click="detail(item)" class="item">
+      <div v-for="item in state.list" :key="item.deviceAddr" @click="detail(item)" class="item">
         <div class="status">
           <div class="left">
             <div class="status1" :class="{ active: item.read }">
