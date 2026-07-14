@@ -70,7 +70,7 @@
   }
 
   onMounted(async () => {
-    showLoadingToast({ message: '加载中' })
+    showLoadingToast({ message: '加载中', duration: 0 })
     await getData(() => {
       closeToast()
     })
