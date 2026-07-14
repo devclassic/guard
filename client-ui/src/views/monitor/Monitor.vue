@@ -1,5 +1,19 @@
 <template>
   <div class="page">
+    <div class="search-box" :class="{ active: state.showSearch }">
+      <div class="header">
+        <div class="input-box">
+          <input
+            ref="search"
+            v-model="state.search"
+            @keydown.enter="searchSubmit"
+            type="text"
+            class="input" />
+          <div @click="clear" class="clear"></div>
+        </div>
+        <div @click="cancel" class="cancel">取消</div>
+      </div>
+    </div>
     <div class="main">
       <div class="box">
         <div class="top">
@@ -11,8 +25,8 @@
             <div class="icon"></div>
           </div>
           <div class="right">
-            <div class="search">
-              <div class="text">搜索设备</div>
+            <div @click="showSearch" class="search">
+              <div class="text">{{ search }}</div>
             </div>
             <div class="bell" :class="{ active: state.nums.alarming > 0 }"></div>
           </div>
@@ -150,6 +164,7 @@
     list: [],
     listState: [],
     menus: ['全部设备', '预警状态', '告警状态', '正常运行', '离线状态', '在线设备'],
+    search: '',
     open: false,
     groups: [],
     groupIndex: 0,
@@ -164,7 +179,9 @@
     },
     showMenu: false,
     showGroup: false,
+    showSearch: false,
     listRef: useTemplateRef('list'),
+    searchRef: useTemplateRef('search'),
   })
 
   const route = useRoute()
@@ -181,6 +198,31 @@
     alarming: '报警',
     preAlarming: '预警',
     offline: '离线',
+  }
+
+  const search = computed(() => {
+    return state.search ? state.search : '搜索设备'
+  })
+
+  const showSearch = () => {
+    state.showSearch = true
+    state.searchRef.focus()
+  }
+
+  const searchSubmit = async () => {
+    state.showSearch = false
+    await getData()
+  }
+
+  const clear = () => {
+    state.search = ''
+    state.searchRef.focus()
+  }
+
+  const cancel = async () => {
+    state.search = ''
+    state.showSearch = false
+    await getData()
   }
 
   const open = item => {
@@ -200,7 +242,7 @@
     let res = await http.post('/api/client/groups')
     state.groups = [{ id: 0, name: '全部分组' }, ...res.data.data]
     const group_id = state.groups[state.groupIndex].id
-    res = await http.post('/api/client/realtime', { group_id })
+    res = await http.post('/api/client/realtime', { group_id, search: state.search })
     const list = res.data.data
     state.nums.alarming = list.filter(item => item.deviceStatus === 'alarming').length
     state.nums.preAlarming = list.filter(item => item.deviceStatus === 'preAlarming').length
@@ -261,7 +303,6 @@
       top: ${rect.top}px;
       bottom: 0;
     `
-
     await getData()
     interval = setInterval(getData, 5000)
   })
@@ -291,6 +332,59 @@
 </script>
 
 <style scoped lang="scss">
+  .search-box {
+    position: absolute;
+    top: 0.8rem;
+    opacity: 0;
+    transition: all 0.3s ease;
+    width: 100%;
+    height: 100%;
+    background: #f4f6f8;
+    z-index: -999;
+    &.active {
+      top: 0;
+      opacity: 1;
+      z-index: 999;
+    }
+    .header {
+      height: 1.3rem;
+      background: #ffffff;
+      display: flex;
+      .input-box {
+        width: 6.07rem;
+        height: 0.6rem;
+        margin: 0.55rem 0 0 0.3rem;
+        background: url('../../assets/images/monitor-search-input.png') no-repeat center / 100% 100%;
+        position: relative;
+        .input {
+          width: 4.65rem;
+          height: 0.3rem;
+          border: 0;
+          outline: 0;
+          background: transparent;
+          position: absolute;
+          top: 50%;
+          left: 0.6rem;
+          transform: translateY(-50%);
+          font-size: 0.26rem;
+          color: #333333;
+        }
+        .clear {
+          width: 0.4rem;
+          height: 0.4rem;
+          position: absolute;
+          top: 0.1rem;
+          right: 0.3rem;
+        }
+      }
+      .cancel {
+        font-size: 0.26rem;
+        color: #005cdd;
+        margin: 0.7rem 0 0 0.3rem;
+      }
+    }
+  }
+
   .box {
     width: 6.9rem;
     margin: 0.9rem auto 0;
@@ -329,7 +423,9 @@
           .text {
             font-size: 0.26rem;
             color: #999999;
-            margin: 0.15rem 0 0 0.6rem;
+            margin: 0.15rem 0.35rem 0 0.6rem;
+            overflow: hidden;
+            white-space: nowrap;
           }
         }
         .bell {

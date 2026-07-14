@@ -17,9 +17,15 @@ export class ApiController {
   @Post('realtime')
   async realtime(@Req() req: Request) {
     const group_id = req.body.group_id
+    const search = req.body.search
     let knex = this.knex.table('device')
     if (group_id != 0) {
       knex = knex.where('group_id', group_id)
+    }
+    if (search) {
+      knex = knex.where(builder => {
+        builder.where('name', 'like', `%${search}%`).orWhere('position', 'like', `%${search}%`)
+      })
     }
     const localDevices = await knex
     const addrs = localDevices.map(item => item.address)
