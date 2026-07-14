@@ -20,4 +20,17 @@ const alarmRecordList = async (
   return res.data.data
 }
 
-export default { getRealTimeDataByDeviceAddr, alarmRecordList }
+const historyList = async (
+  deviceAddr: string,
+  nodeId = -1,
+  startTime = '2026-01-01 00:00:00',
+  endTime = format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
+) => {
+  const http = useHttp()
+  const res = await http.get('/api/data/historyList', {
+    params: { deviceAddr, nodeId, startTime, endTime },
+  })
+  return res.data.data
+}
+
+export default { getRealTimeDataByDeviceAddr, alarmRecordList, historyList }

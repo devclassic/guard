@@ -1,44 +1,47 @@
 <template>
   <div class="page">
     <div @click="router.back" class="page-back"></div>
-    <div class="page-title">设备名称</div>
+    <div class="page-title">{{ state.data.name }}</div>
     <div @click="state.showMenu = true" class="page-more"></div>
     <div class="info">
       <div class="left">
         <div class="icon"></div>
-        <div class="text">设备位置：工厂西北角锅炉</div>
+        <div class="text">设备位置：{{ state.data.pos }}</div>
       </div>
-      <div class="right">2026-04-15 13:05:49</div>
+      <div class="right">
+        {{
+          state.data.timeStamp ? format(new Date(state.data.timeStamp), 'yyyy-MM-dd HH:mm:ss') : ''
+        }}
+      </div>
     </div>
     <div class="list scroll">
-      <div @click="historySingle" class="item">
+      <div v-if="!state.data.dataItem" class="item">
         <div class="wrap">
           <div class="left">
-            <div class="status status1">正常</div>
-            CO2：1016.00 PPM
+            <div class="status status-2">离线</div>
+            设备离线
           </div>
-          <div class="right"></div>
         </div>
       </div>
-      <div @click="historySingle" class="item">
-        <div class="wrap">
-          <div class="left">
-            <div class="status status2">离线</div>
-            甲烷(PPM)：无数据
+      <template v-else>
+        <template v-for="item in state.data.dataItem" :key="item.nodeId">
+          <div
+            v-for="item1 in item.registerItem"
+            :key="item1.registerId"
+            @click="historySingle(item.nodeId)"
+            class="item">
+            <div class="wrap">
+              <div class="left">
+                <div class="status" :class="`status${item1.alarmLevel}`">
+                  {{ status[item1.alarmLevel] }}
+                </div>
+                {{ item1.registerName }}：{{ item1.data }} {{ item1.unit }}
+              </div>
+              <div class="right"></div>
+            </div>
           </div>
-          <div class="right"></div>
-        </div>
-      </div>
-      <div @click="historySingle" class="item">
-        <div class="wrap">
-          <div class="left">
-            <div class="status status3">告警</div>
-            甲烷(PPM)：无数据
-          </div>
-          <div class="right"></div>
-        </div>
-        <div class="text">告警：AI告警判断原因和处理方案。尽量让ai处理在 30个字符内。</div>
-      </div>
+        </template>
+      </template>
     </div>
     <van-action-sheet v-model:show="state.showMenu" title="更多" round class="more-action-sheet">
       <div class="items">
@@ -56,26 +59,55 @@
 </template>
 
 <script setup>
-  import { useRouter } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import { showToast } from 'vant'
-  import { reactive } from 'vue'
+  import { onMounted, onUnmounted, reactive } from 'vue'
+  import { useAxios } from '../../hooks/useAxios'
+  import { format } from 'date-fns'
 
   const state = reactive({
+    data: {},
     showMenu: false,
   })
 
+  let interval = null
+  const route = useRoute()
   const router = useRouter()
+  const http = useAxios()
 
-  const history = () => {
-    router.push('/history')
+  const status = {
+    '0': '正常',
+    '1': '报警',
+    '2': '预警',
+    '3': '预警',
+    '4': '报警',
+    '-2': '报警',
   }
 
-  const historySingle = () => {
-    router.push('/history/single')
+  const getData = async () => {
+    const res = await http.post('/api/client/realtime', { group_id: 0, addr: route.query.addr })
+    state.data = res.data.data[0]
+  }
+
+  onMounted(async () => {
+    await getData()
+    interval = setInterval(getData, 5000)
+  })
+
+  onUnmounted(() => {
+    clearInterval(interval)
+  })
+
+  const history = () => {
+    router.push({ path: '/history', query: { addr: route.query.addr } })
+  }
+
+  const historySingle = node => {
+    router.push({ path: '/history/single', query: { addr: route.query.addr, node: node } })
   }
 
   const alarm = () => {
-    router.push('/alarm/detail')
+    router.push({ path: '/alarm', query: { addr: route.query.addr } })
   }
 </script>
 
@@ -160,17 +192,29 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            &.status1 {
+            &.status0 {
               background: #ddf7f6;
               color: #02c3bc;
             }
-            &.status2 {
-              background: #f5f5f5;
-              color: #cccccc;
-            }
-            &.status3 {
+            &.status1 {
               background: #ffe2e6;
               color: #ff2742;
+            }
+            &.status2 {
+              background: #feeedb;
+              color: #fa9722;
+            }
+            &.status3 {
+              background: #feeedb;
+              color: #fa9722;
+            }
+            &.status4 {
+              background: #ffe2e6;
+              color: #ff2742;
+            }
+            &.status-2 {
+              background: #f5f5f5;
+              color: #cccccc;
             }
           }
         }

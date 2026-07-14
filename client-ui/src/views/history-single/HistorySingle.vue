@@ -12,9 +12,9 @@
     <van-calendar v-model:show="state.showDate" type="range" @confirm="onDate" />
     <div class="time">
       <div class="icon"></div>
-      <div>时间：2026-04-15 13:05:49 ～ 2026-04-16 13:05:49</div>
+      <div>时间：{{ state.startTime }} ～ {{ state.endTime }}</div>
     </div>
-    <div class="info">
+    <div v-if="false" class="info">
       <div class="row1">
         <div class="left">
           <div class="status status1">正常</div>
@@ -42,20 +42,20 @@
       </div>
     </div>
     <div class="list scroll">
-      <table class="table">
+      <table v-if="state.list.length" class="table">
         <thead>
           <tr>
-            <th>CO2(PPM)</th>
-            <th>
+            <th>{{ state.list[0].data[0].registerName }}</th>
+            <th @click="sort">
               <div>时间</div>
               <div class="sort"></div>
             </th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>0.5</td>
-            <td>2026-04-16 13:05:49</td>
+          <tr v-for="item in state.list">
+            <td>{{ item.data[0].text }}</td>
+            <td>{{ format(new Date(item.recordTime), 'yyyy-MM-dd HH:mm:ss') }}</td>
           </tr>
         </tbody>
       </table>
@@ -64,29 +64,91 @@
 </template>
 
 <script setup>
-  import { useRouter } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import { showToast } from 'vant'
-  import { reactive, useTemplateRef } from 'vue'
+  import { onMounted, onUnmounted, reactive, useTemplateRef } from 'vue'
+  import { format, subDays, subMonths, startOfDay, endOfDay } from 'date-fns'
+  import { useAxios } from '../../hooks/useAxios'
 
   const state = reactive({
+    list: [],
+    startTime: '',
+    endTime: '',
     select: 0,
+    sort: 'asc',
     showDate: false,
     selectBgRef: useTemplateRef('selectBg'),
   })
 
+  let interval = null
+  const route = useRoute()
   const router = useRouter()
+  const http = useAxios()
 
-  const select = i => {
+  const getRecentDays = days => {
+    const now = new Date()
+    const start = startOfDay(subDays(now, days))
+    const end = endOfDay(now)
+    state.startTime = format(new Date(start), 'yyyy-MM-dd HH:mm:ss')
+    state.endTime = format(new Date(end), 'yyyy-MM-dd HH:mm:ss')
+  }
+
+  const sortByTime = (array, key, order) => {
+    return [...array].sort((a, b) => {
+      const timeA = new Date(a[key]).getTime()
+      const timeB = new Date(b[key]).getTime()
+      return order === 'desc' ? timeB - timeA : timeA - timeB
+    })
+  }
+
+  const getData = async () => {
+    const res = await http.post('/api/client/history', {
+      deviceAddr: route.query.addr,
+      nodeId: route.query.node,
+      startTime: state.startTime,
+      endTime: state.endTime,
+    })
+    if (res.data.data) {
+      state.list = sortByTime(res.data.data, 'recordTime', state.sort)
+    }
+  }
+
+  const sort = async () => {
+    if (state.sort === 'desc') {
+      state.sort = 'asc'
+    } else {
+      state.sort = 'desc'
+    }
+    await getData()
+  }
+
+  onMounted(async () => {
+    getRecentDays(1)
+    await getData()
+    interval = setInterval(getData, 5000)
+  })
+
+  onUnmounted(() => {
+    clearInterval(interval)
+  })
+
+  const select = async i => {
     state.select = i
     switch (state.select) {
       case 0:
         state.selectBgRef.style.left = '0'
+        getRecentDays(1)
+        await getData()
         break
       case 1:
         state.selectBgRef.style.left = '1.55rem'
+        getRecentDays(7)
+        await getData()
         break
       case 2:
         state.selectBgRef.style.left = '3.32rem'
+        getRecentDays(30)
+        await getData()
         break
       case 3:
         state.selectBgRef.style.left = '5.175rem'
@@ -95,9 +157,12 @@
     }
   }
 
-  const onDate = values => {
+  const onDate = async values => {
     const [start, end] = values
+    state.startTime = format(new Date(start), 'yyyy-MM-dd HH:mm:ss')
+    state.endTime = format(new Date(end), 'yyyy-MM-dd HH:mm:ss')
     state.showDate = false
+    await getData()
   }
 </script>
 
@@ -226,7 +291,7 @@
   .list {
     width: 6.3rem;
     position: absolute;
-    top: 5.67rem;
+    top: 3.2rem;
     left: 50%;
     bottom: 0;
     transform: translateX(-50%);

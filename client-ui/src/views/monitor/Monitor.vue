@@ -95,7 +95,7 @@
         <div ref="list" class="list scroll">
           <div v-for="item in state.list" :key="item.addr" class="item">
             <div class="info1">
-              <div @click="detail" class="left">
+              <div @click="detail(item)" class="left">
                 <img src="../../assets/images/monitor-item-icon.png" class="icon" />
                 <div class="name">{{ item.name }}</div>
               </div>
@@ -109,9 +109,6 @@
               </div>
             </div>
             <div v-if="item.open" class="info2">
-              <div class="time">
-                更新时间：{{ format(new Date(item.timeStamp), 'yyyy-MM-dd HH:mm:ss') }}
-              </div>
               <template v-if="item.deviceStatus === 'offline'">
                 <div v-if="item.open" class="offline">
                   <div class="icon"></div>
@@ -119,6 +116,9 @@
                 </div>
               </template>
               <template v-else>
+                <div class="time">
+                  更新时间：{{ format(new Date(item.timeStamp), 'yyyy-MM-dd HH:mm:ss') }}
+                </div>
                 <div class="values">
                   <template v-for="item1 in item.dataItem" :key="item1.nodeId">
                     <div v-for="item2 in item1.registerItem" :key="item2.registerId" class="value">
@@ -326,8 +326,8 @@
     clearInterval(interval)
   })
 
-  const detail = () => {
-    router.push('/monitor/detail')
+  const detail = item => {
+    router.push({ path: '/monitor/detail', query: { addr: item.addr } })
   }
 </script>
 

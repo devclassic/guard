@@ -85,7 +85,7 @@ const router = createRouter({
       component: Alarm,
       meta: {
         transitions: {
-          priority: -2,
+          priority: -3,
           enter: 'slide-left',
           leave: 'slide-left-reverse',
         },
@@ -96,7 +96,7 @@ const router = createRouter({
       component: AlarmDtail,
       meta: {
         transitions: {
-          priority: -3,
+          priority: -4,
           enter: 'slide-left',
           leave: 'slide-left-reverse',
         },

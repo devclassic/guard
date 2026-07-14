@@ -18,6 +18,7 @@ export class ApiController {
   async realtime(@Req() req: Request) {
     const group_id = req.body.group_id
     const search = req.body.search
+    const addr = req.body.addr
     let knex = this.knex.table('device')
     if (group_id != 0) {
       knex = knex.where('group_id', group_id)
@@ -26,6 +27,9 @@ export class ApiController {
       knex = knex.where(builder => {
         builder.where('name', 'like', `%${search}%`).orWhere('position', 'like', `%${search}%`)
       })
+    }
+    if (addr) {
+      knex = knex.where('address', addr)
     }
     const localDevices = await knex
     const addrs = localDevices.map(item => item.address)
@@ -70,7 +74,13 @@ export class ApiController {
 
   @Post('alarms')
   async alarms(@Req() req: Request) {
-    let addrs = await this.knex.table('device').select('address')
+    const addr = req.body.addr
+    let addrs: any[] = []
+    if (addr) {
+      addrs = [{ address: addr }]
+    } else {
+      addrs = await this.knex.table('device').select('address')
+    }
     const reqs: any[] = []
     addrs.forEach(item => {
       const req = platform.alarmRecordList(item.address)
@@ -151,6 +161,16 @@ ${info.info}
       res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`)
       res.end()
     }
+  }
+
+  @Post('history')
+  async history(@Req() req: Request) {
+    const addr = req.body.deviceAddr
+    const nodeId = req.body.nodeId
+    const startTime = req.body.startTime
+    const endTime = req.body.endTime
+    const data = await platform.historyList(addr, nodeId, startTime, endTime)
+    return { success: true, message: '获取历史数据成功', data }
   }
 
   @Post('config')

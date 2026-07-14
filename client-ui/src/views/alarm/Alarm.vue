@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-  import { useRouter } from 'vue-router'
+  import { useRoute, useRouter } from 'vue-router'
   import { showToast, showLoadingToast, closeToast } from 'vant'
   import { useAxios } from '../../hooks/useAxios'
   import { nextTick, onMounted, onUnmounted, reactive } from 'vue'
@@ -57,12 +57,13 @@
   }
 
   let interval = null
+  const route = useRoute()
   const router = useRouter()
   const http = useAxios()
   const alarmStore = useAlarmStore()
 
   const getData = async (cb = null) => {
-    const res = await http.post('/api/client/alarms')
+    const res = await http.post('/api/client/alarms', { addr: route.query.addr })
     state.list = res.data.data
     await nextTick()
     cb && cb()
