@@ -29,7 +29,7 @@ export const useHttp = () => {
       baseURL: process.env.PLATFORM_BASE_URL,
     })
 
-    retry(instance, { retries: Infinity, retryDelay: retry.exponentialDelay })
+    retry(instance, { retries: Infinity, retryDelay: retry.linearDelay(500) })
 
     instance.interceptors.request.use(
       async config => {
