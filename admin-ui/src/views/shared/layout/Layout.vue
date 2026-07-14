@@ -62,6 +62,7 @@
   import { useUserStore } from '../../../stores/user'
   import { useAxios } from '../../../hooks/useAxios'
 
+  const route = useRoute()
   const router = useRouter()
   const userStore = useUserStore()
   const http = useAxios()
@@ -69,6 +70,9 @@
   let checkInterval = null
 
   const checkLogin = async () => {
+    if (route.path === '/login') {
+      return
+    }
     const res = await http.post('/api/admin/check')
     if (!res.data.success) {
       clearInterval(checkInterval)
@@ -95,8 +99,6 @@
   const state = reactive({
     showMenu: true,
   })
-
-  const route = useRoute()
 
   const { width, height } = useWindowSize()
 
