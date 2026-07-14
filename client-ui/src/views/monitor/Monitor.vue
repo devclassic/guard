@@ -229,7 +229,7 @@
 
   const open = item => {
     item.open = !item.open
-    state.listState = state.list.map(item => ({ open: item.open }))
+    state.listState = state.list.map(item => ({ addr: item.addr, open: item.open }))
   }
 
   const openAll = () => {
@@ -237,7 +237,7 @@
     state.list.forEach(item => {
       item.open = state.open
     })
-    state.listState = state.list.map(item => ({ open: item.open }))
+    state.listState = state.list.map(item => ({ addr: item.addr, open: item.open }))
   }
 
   const getData = async () => {
@@ -259,7 +259,7 @@
     }
     if (state.groupId === group_id) {
       state.listState.forEach((item, i) => {
-        list[i].open = item.open
+        list.find(x => x.addr === item.addr).open = item.open
       })
     }
     state.groupId = group_id
