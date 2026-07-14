@@ -333,8 +333,8 @@
 
 <style scoped lang="scss">
   .search-box {
-    position: absolute;
-    top: 0.8rem;
+    position: fixed;
+    transform: translateY(0.8rem);
     opacity: 0;
     transition: all 0.3s ease;
     width: 100%;
@@ -342,7 +342,7 @@
     background: #f4f6f8;
     z-index: -999;
     &.active {
-      top: 0;
+      transform: translateY(0);
       opacity: 1;
       z-index: 999;
     }
