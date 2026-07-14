@@ -111,7 +111,7 @@
   }
 
   const logout = () => {
-    localStorage.removeItem('user')
+    localStorage.removeItem('admin')
     router.push('/login')
   }
 </script>
