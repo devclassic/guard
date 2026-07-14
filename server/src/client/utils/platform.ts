@@ -8,7 +8,7 @@ const getRealTimeDataByDeviceAddr = async (deviceAddrs: string) => {
 }
 
 const alarmRecordList = async (
-  deviceAddr: string,
+  deviceAddr: number,
   nodeId = -1,
   startTime = '2026-01-01 00:00:00',
   endTime = format(new Date(), 'yyyy-MM-dd HH:mm:ss'),
@@ -21,7 +21,7 @@ const alarmRecordList = async (
 }
 
 const historyList = async (
-  deviceAddr: string,
+  deviceAddr: number,
   nodeId = -1,
   startTime = '2026-01-01 00:00:00',
   endTime = format(new Date(), 'yyyy-MM-dd HH:mm:ss'),

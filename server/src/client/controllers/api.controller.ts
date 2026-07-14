@@ -165,11 +165,11 @@ ${info.info}
 
   @Post('history')
   async history(@Req() req: Request) {
-    const addr = req.body.deviceAddr
+    const deviceAddr = req.body.deviceAddr
     const nodeId = req.body.nodeId
     const startTime = req.body.startTime
     const endTime = req.body.endTime
-    const data = await platform.historyList(addr, nodeId, startTime, endTime)
+    const data = await platform.historyList(deviceAddr, nodeId, startTime, endTime)
     return { success: true, message: '获取历史数据成功', data }
   }
 

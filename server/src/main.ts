@@ -8,7 +8,7 @@ async function bootstrap() {
   app.enableCors()
   app.useStaticAssets('public/client', { prefix: '/' })
   app.useStaticAssets('public/admin', { prefix: '/admin' })
-  const port = process.env.PORT ?? 6666
+  const port = process.env.PORT ?? 3000
   await app.listen(port)
   Logger.log(`http://localhost:${port}`, 'Server')
 }

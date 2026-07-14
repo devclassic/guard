@@ -15,17 +15,17 @@
       <div>时间：{{ state.startTime }} ～ {{ state.endTime }}</div>
     </div>
     <div class="list scroll">
-      <table class="table">
+      <table v-if="state.list.length" class="table">
         <thead>
           <tr>
             <th @click="sort">
               <div>时间</div>
               <div class="sort"></div>
             </th>
-            <template v-if="state.list.length">
-              <th v-for="item in state.list[0].data" :key="item.registerId">
-                {{ item.registerName }}
-              </th>
+            <template v-for="item in state.list[0].items">
+              <template v-for="item1 in item.data">
+                <th>{{ item1.registerName }}</th>
+              </template>
             </template>
           </tr>
         </thead>
@@ -33,7 +33,13 @@
           <template v-for="item in state.list">
             <tr>
               <td>{{ format(new Date(item.recordTime), 'yyyy-MM-dd HH:mm:ss') }}</td>
-              <td v-for="item2 in item.data">{{ item2.text }}</td>
+              <template v-for="item1 in item.items">
+                <template v-for="item2 in item1.data">
+                  <td>
+                    {{ item2.text }}
+                  </td>
+                </template>
+              </template>
             </tr>
           </template>
         </tbody>
@@ -88,7 +94,18 @@
       endTime: state.endTime,
     })
     if (res.data.data) {
-      state.list = sortByTime(res.data.data, 'recordTime', state.sort)
+      const result = Object.entries(
+        res.data.data.reduce((acc, item) => {
+          const key = item.recordTime
+          if (!acc[key]) acc[key] = []
+          acc[key].push(item)
+          return acc
+        }, {}),
+      ).map(([recordTime, items]) => ({
+        recordTime: Number(recordTime),
+        items: items.sort((a, b) => a.nodeId - b.nodeId),
+      }))
+      state.list = sortByTime(result, 'recordTime', state.sort)
     }
   }
 
