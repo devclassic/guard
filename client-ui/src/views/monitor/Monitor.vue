@@ -6,7 +6,8 @@
           <input
             ref="search"
             v-model="state.search"
-            @keydown.enter="searchSubmit"
+            enterkeyhint="search"
+            @keyup.enter="searchSubmit"
             type="text"
             class="input" />
           <div @click="clear" class="clear"></div>
