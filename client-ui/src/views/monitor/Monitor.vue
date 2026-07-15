@@ -212,6 +212,7 @@
 
   const searchSubmit = async () => {
     state.groupId = 0
+    state.stateMenuIndex = 0
     state.listState = []
     state.showSearch = false
     state.searchRef.blur()
