@@ -225,6 +225,9 @@
   }
 
   const cancel = async () => {
+    state.groupId = 0
+    state.stateMenuIndex = 0
+    state.listState = []
     state.search = ''
     state.showSearch = false
     state.searchRef.blur()
