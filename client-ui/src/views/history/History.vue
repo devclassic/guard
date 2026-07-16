@@ -14,6 +14,7 @@
       type="range"
       allow-same-day
       :min-date="new Date(2026, 0, 1)"
+      :max-date="new Date()"
       @confirm="onDate" />
     <div class="time">
       <div class="icon"></div>
