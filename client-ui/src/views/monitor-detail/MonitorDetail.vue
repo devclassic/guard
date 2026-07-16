@@ -60,7 +60,7 @@
 
 <script setup>
   import { useRoute, useRouter } from 'vue-router'
-  import { showToast, showLoadingToast, showToast, closeToast } from 'vant'
+  import { showToast, showLoadingToast, closeToast } from 'vant'
   import { onMounted, onUnmounted, reactive } from 'vue'
   import { useAxios } from '../../hooks/useAxios'
   import { format } from 'date-fns'
