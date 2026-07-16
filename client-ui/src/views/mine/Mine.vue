@@ -26,7 +26,7 @@
 <script setup>
   import Tabbar from '../shared/tabbar/Tabbar.vue'
   import { useRouter } from 'vue-router'
-  import { showToast } from 'vant'
+  import { showToast, showLoadingToast, closeToast } from 'vant'
   import { onMounted, reactive } from 'vue'
   import { useAxios } from '../../hooks/useAxios.js'
 
@@ -38,10 +38,12 @@
   const http = useAxios()
 
   onMounted(async () => {
+    showLoadingToast({ message: '加载中', duration: 0 })
     const res = await http.post('/api/client/config')
     res.data.data.forEach(item => {
       state.config[item.name] = item.value
     })
+    closeToast()
   })
 
   const user = () => {

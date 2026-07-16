@@ -60,7 +60,7 @@
 
 <script setup>
   import { useRoute, useRouter } from 'vue-router'
-  import { showToast } from 'vant'
+  import { showToast, showLoadingToast, showToast, closeToast } from 'vant'
   import { onMounted, onUnmounted, reactive } from 'vue'
   import { useAxios } from '../../hooks/useAxios'
   import { format } from 'date-fns'
@@ -84,14 +84,18 @@
     '-2': '报警',
   }
 
-  const getData = async () => {
+  const getData = async (loading = true) => {
+    loading && showLoadingToast({ message: '加载中', duration: 0 })
     const res = await http.post('/api/client/realtime', { group_id: 0, addr: route.query.addr })
     state.data = res.data.data[0]
+    loading && closeToast()
   }
 
   onMounted(async () => {
     await getData()
-    interval = setInterval(getData, 5000)
+    interval = setInterval(async () => {
+      await getData(false)
+    }, 5000)
   })
 
   onUnmounted(() => {

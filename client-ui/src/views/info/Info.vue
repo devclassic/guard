@@ -29,6 +29,7 @@
   import Tabbar from '../shared/tabbar/Tabbar.vue'
   import { useRouter } from 'vue-router'
   import { useAxios } from '../../hooks/useAxios.js'
+  import { showLoadingToast, closeToast } from 'vant'
   import { onMounted, onUnmounted, reactive } from 'vue'
 
   const state = reactive({
@@ -42,16 +43,20 @@
   const router = useRouter()
   const http = useAxios()
 
-  const getData = async () => {
+  const getData = async (loading = true) => {
+    loading && showLoadingToast({ message: '加载中', duration: 0 })
     const res = await http.post('/api/client/info')
     const info = res.data.data
     state.info.alarm = `当前共 ${info.alarm} 条告警未处理`
     state.info.offline = `当前共 ${info.offline} 个设备离线`
+    loading && closeToast()
   }
 
   onMounted(async () => {
     await getData()
-    interval = setInterval(getData, 30000)
+    interval = setInterval(async () => {
+      await getData(false)
+    }, 30000)
   })
 
   onUnmounted(() => {

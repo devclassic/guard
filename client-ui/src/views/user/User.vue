@@ -36,7 +36,7 @@
 
 <script setup>
   import { useRouter } from 'vue-router'
-  import { showToast } from 'vant'
+  import { showToast, showLoadingToast, closeToast } from 'vant'
   import { onMounted, reactive } from 'vue'
   import { useAxios } from '../../hooks/useAxios.js'
   import { useUserStore } from '../../stores/user.js'
@@ -50,10 +50,12 @@
   const userStore = useUserStore()
 
   onMounted(async () => {
+    showLoadingToast({ message: '加载中', duration: 0 })
     const res = await http.post('/api/client/config')
     res.data.data.forEach(item => {
       state.config[item.name] = item.value
     })
+    closeToast()
   })
 
   const repass = () => {

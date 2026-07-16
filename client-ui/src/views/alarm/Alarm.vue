@@ -62,19 +62,18 @@
   const http = useAxios()
   const alarmStore = useAlarmStore()
 
-  const getData = async (cb = null) => {
+  const getData = async (loading = true) => {
+    loading && showLoadingToast({ message: '加载中', duration: 0 })
     const res = await http.post('/api/client/alarms', { addr: route.query.addr })
     state.list = res.data.data
-    await nextTick()
-    cb && cb()
+    loading && closeToast()
   }
 
   onMounted(async () => {
-    showLoadingToast({ message: '加载中', duration: 0 })
-    await getData(() => {
-      closeToast()
-    })
-    interval = setInterval(getData, 30000)
+    await getData()
+    interval = setInterval(async () => {
+      await getData(false)
+    }, 30000)
   })
 
   onUnmounted(() => {

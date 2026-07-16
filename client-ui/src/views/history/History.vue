@@ -50,7 +50,7 @@
 
 <script setup>
   import { useRoute, useRouter } from 'vue-router'
-  import { showToast } from 'vant'
+  import { showToast, showLoadingToast, closeToast } from 'vant'
   import { onMounted, onUnmounted, reactive, useTemplateRef } from 'vue'
   import { format, subDays, subMonths, startOfDay, endOfDay } from 'date-fns'
   import { useAxios } from '../../hooks/useAxios'
@@ -86,7 +86,8 @@
     })
   }
 
-  const getData = async () => {
+  const getData = async (loading = true) => {
+    loading && showLoadingToast({ message: '加载中', duration: 0 })
     const res = await http.post('/api/client/history', {
       deviceAddr: route.query.addr,
       nodeId: -1,
@@ -107,6 +108,7 @@
       }))
       state.list = sortByTime(result, 'recordTime', state.sort)
     }
+    loading && closeToast()
   }
 
   const sort = async () => {
@@ -121,7 +123,9 @@
   onMounted(async () => {
     getRecentDays(1)
     await getData()
-    interval = setInterval(getData, 5000)
+    interval = setInterval(async () => {
+      await getData(false)
+    }, 5000)
   })
 
   onUnmounted(() => {
