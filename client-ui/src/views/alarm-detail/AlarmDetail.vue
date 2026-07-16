@@ -62,7 +62,7 @@
   import { useUserStore } from '../../stores/user'
   import { format } from 'date-fns'
   import { useAxios } from '../../hooks/useAxios'
-  import { reactive } from 'vue'
+  import { reactive, nextTick } from 'vue'
   import { fetchEventSource } from '@microsoft/fetch-event-source'
   import MarkdownPreview from '@uivjs/vue-markdown-preview'
   import '@uivjs/vue-markdown-preview/markdown.css'
@@ -84,12 +84,14 @@
     '-1': '离线',
     '-2': '告警',
   }
-
+  let ctrl = new AbortController()
   const ai = async () => {
+    ctrl.abort()
+    ctrl = new AbortController()
+    await nextTick()
     state.md = '思考分析中...'
     let result = ''
     const base = import.meta.env.VITE_BASE_URL ?? ''
-    const ctrl = new AbortController()
     fetchEventSource(`${base}/api/client/ai`, {
       method: 'POST',
       headers: {
