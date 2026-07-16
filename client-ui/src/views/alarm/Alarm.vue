@@ -63,10 +63,10 @@
   const alarmStore = useAlarmStore()
 
   const getData = async (loading = true) => {
-    loading && showLoadingToast({ message: '加载中', duration: 0 })
+    if (loading) showLoadingToast({ message: '加载中', duration: 0 })
     const res = await http.post('/api/client/alarms', { addr: route.query.addr })
     state.list = res.data.data
-    loading && closeToast()
+    if (loading) closeToast()
   }
 
   onMounted(async () => {

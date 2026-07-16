@@ -249,7 +249,7 @@
   }
 
   const getData = async (loading = true) => {
-    loading && showLoadingToast({ message: '加载中', duration: 0 })
+    if (loading) showLoadingToast({ message: '加载中', duration: 0 })
     let res = await http.post('/api/client/groups')
     state.groups = [{ id: 0, name: '全部分组' }, ...res.data.data]
     const group_id = state.groups[state.groupIndex].id
@@ -280,7 +280,7 @@
         state.list = list.filter(item => item.deviceStatus === status[state.stateMenuIndex])
       }
     }
-    loading && closeToast()
+    if (loading) closeToast()
   }
 
   const groupName = computed(() => {

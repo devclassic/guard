@@ -102,7 +102,7 @@
   }
 
   const getData = async (loading = true) => {
-    loading && showLoadingToast({ message: '加载中', duration: 0 })
+    if (loading) showLoadingToast({ message: '加载中', duration: 0 })
     const res = await http.post('/api/client/history', {
       deviceAddr: route.query.addr,
       nodeId: route.query.node,
@@ -112,7 +112,7 @@
     if (res.data.data) {
       state.list = sortByTime(res.data.data, 'recordTime', state.sort)
     }
-    loading && closeToast()
+    if (loading) closeToast()
   }
 
   const sort = async () => {

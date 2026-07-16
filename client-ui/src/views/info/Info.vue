@@ -44,12 +44,12 @@
   const http = useAxios()
 
   const getData = async (loading = true) => {
-    loading && showLoadingToast({ message: '加载中', duration: 0 })
+    if (loading) showLoadingToast({ message: '加载中', duration: 0 })
     const res = await http.post('/api/client/info')
     const info = res.data.data
     state.info.alarm = `当前共 ${info.alarm} 条告警未处理`
     state.info.offline = `当前共 ${info.offline} 个设备离线`
-    loading && closeToast()
+    if (loading) closeToast()
   }
 
   onMounted(async () => {
