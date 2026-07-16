@@ -264,11 +264,10 @@
       3: 'normal',
       4: 'offline',
     }
-    if (state.groupId === group_id) {
-      state.listState.forEach((item, i) => {
-        list.find(x => x.addr === item.addr).open = item.open
-      })
-    }
+    list.forEach(item => {
+      const itemState = state.listState.find(x => x.addr === item.addr)
+      item.open = itemState ? itemState.open : false
+    })
     state.groupId = group_id
     if (state.stateMenuIndex === 0) {
       state.list = list
@@ -289,12 +288,14 @@
   })
 
   const groupChange = async i => {
+    state.listState = []
     state.showGroup = false
     state.groupIndex = i
     await getData()
   }
 
   const stateMenuChange = async i => {
+    state.listState = []
     state.showMenu = false
     state.stateMenuIndex = i
     await getData()
