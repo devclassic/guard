@@ -317,6 +317,7 @@
       bottom: 0;
     `
     await getData()
+    clearInterval(interval)
     interval = setInterval(async () => {
       await getData(false)
     }, 5000)
@@ -334,7 +335,10 @@
     }
 
     await getData()
-    interval = setInterval(getData, 5000)
+    clearInterval(interval)
+    interval = setInterval(async () => {
+      await getData(false)
+    }, 5000)
   })
 
   onDeactivated(() => {
