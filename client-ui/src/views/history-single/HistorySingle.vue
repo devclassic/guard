@@ -9,12 +9,13 @@
       <div @click="select(2)" class="item" :class="{ active: state.select === 2 }">近1个月</div>
       <div @click="select(3)" class="item" :class="{ active: state.select === 3 }">自定义</div>
     </div>
-    <t-calendar
+    <nut-calendar
       v-model:visible="state.showDate"
-      :min-date="new Date(2026, 0, 1)"
-      :max-date="new Date()"
+      :default-value="state.defaultDate"
       type="range"
-      @confirm="onDate" />
+      :start-date="format(new Date(2026, 0, 1), 'yyyy-MM-dd')"
+      :end-date="format(new Date(), 'yyyy-MM-dd')"
+      @choose="onDate" />
     <div class="time">
       <div class="icon"></div>
       <div>时间：{{ state.startTime }} ～ {{ state.endTime }}</div>
@@ -71,8 +72,8 @@
 <script setup>
   import { useRoute, useRouter } from 'vue-router'
   import { showToast, showLoadingToast, closeToast } from 'vant'
-  import { Calendar as TCalendar } from 'tdesign-mobile-vue'
-  import 'tdesign-mobile-vue/es/calendar/style/index.css'
+  import { Calendar as NutCalendar } from '@nutui/nutui'
+  import '@nutui/nutui/dist/style.css'
   import { onMounted, onUnmounted, reactive, useTemplateRef } from 'vue'
   import { format, subDays, subMonths, startOfDay, endOfDay } from 'date-fns'
   import { useAxios } from '../../hooks/useAxios'
@@ -83,6 +84,7 @@
     endTime: '',
     select: 0,
     sort: 'asc',
+    defaultDate: [format(new Date(), 'yyyy-MM-dd'), format(new Date(), 'yyyy-MM-dd')],
     showDate: false,
     selectBgRef: useTemplateRef('selectBg'),
   })
@@ -170,14 +172,38 @@
 
   const onDate = async values => {
     const [start, end] = values
-    state.startTime = format(new Date(start), 'yyyy-MM-dd HH:mm:ss')
-    state.endTime = format(new Date(end), 'yyyy-MM-dd HH:mm:ss')
+    state.startTime = `${start[3]} 00:00:00`
+    state.endTime = `${end[3]} 23:59:59`
     state.showDate = false
     await getData()
   }
 </script>
 
 <style scoped lang="scss">
+  :deep(.nut-calendar__day--active) {
+    background-color: #2e7bff !important;
+  }
+
+  :deep(.nut-calendar__confirm) {
+    background: #2e7bff !important;
+  }
+
+  :deep(.nut-calendar__day.weekend) {
+    color: #2e7bff !important;
+  }
+
+  :deep(.nut-calendar__weekday.weekend) {
+    color: #2e7bff !important;
+  }
+
+  :deep(.nut-calendar__day--choose) {
+    color: #cccccc !important;
+  }
+
+  :deep(.nut-calendar__day.weekend.nut-calendar__day--choose) {
+    color: #cccccc !important;
+  }
+
   .page {
     .page-back {
       width: 0.21rem;
