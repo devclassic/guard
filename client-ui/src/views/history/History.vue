@@ -9,7 +9,12 @@
       <div @click="select(2)" class="item" :class="{ active: state.select === 2 }">近1个月</div>
       <div @click="select(3)" class="item" :class="{ active: state.select === 3 }">自定义</div>
     </div>
-    <van-calendar v-model:show="state.showDate" type="range" @confirm="onDate" />
+    <van-calendar
+      v-model:show="state.showDate"
+      type="range"
+      allow-same-day
+      :min-date="new Date(2026, 0, 1)"
+      @confirm="onDate" />
     <div class="time">
       <div class="icon"></div>
       <div>时间：{{ state.startTime }} ～ {{ state.endTime }}</div>
