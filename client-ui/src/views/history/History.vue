@@ -180,30 +180,6 @@
 </script>
 
 <style scoped lang="scss">
-  :deep(.nut-calendar__day--active) {
-    background-color: #2e7bff !important;
-  }
-
-  :deep(.nut-calendar__confirm) {
-    background: #2e7bff !important;
-  }
-
-  :deep(.nut-calendar__day.weekend) {
-    color: #2e7bff !important;
-  }
-
-  :deep(.nut-calendar__weekday.weekend) {
-    color: #2e7bff !important;
-  }
-
-  :deep(.nut-calendar__day--choose) {
-    color: #cccccc !important;
-  }
-
-  :deep(.nut-calendar__day.weekend.nut-calendar__day--choose) {
-    color: #cccccc !important;
-  }
-
   .page {
     .page-back {
       width: 0.21rem;
