@@ -65,6 +65,10 @@
   const getData = async (loading = true) => {
     if (loading) showLoadingToast({ message: '加载中', duration: 0 })
     const res = await http.post('/api/client/alarms', { addr: route.query.addr })
+    res.data.data.sort((a, b) => {
+      if (a.read !== b.read) return a.read ? 1 : -1
+      return b.recordTime - a.recordTime
+    })
     state.list = res.data.data
     if (loading) closeToast()
   }
