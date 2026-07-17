@@ -6,20 +6,11 @@ export default defineConfig({
   base: './',
   build: {
     outDir: 'dist/client',
-    chunkSizeWarningLimit: 1000,
+    chunkSizeWarningLimit: 5000,
     rolldownOptions: {
       output: {
         manualChunks(id) {
           if (id.includes('node_modules')) {
-            if (id.includes('vue') || id.includes('pinia')) {
-              return 'vue'
-            }
-            if (id.includes('vant')) {
-              return 'vant'
-            }
-            if (id.includes('axios')) {
-              return 'axios'
-            }
             return 'vendor'
           }
         },

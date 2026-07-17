@@ -9,13 +9,15 @@
       <div @click="select(2)" class="item" :class="{ active: state.select === 2 }">近1个月</div>
       <div @click="select(3)" class="item" :class="{ active: state.select === 3 }">自定义</div>
     </div>
-    <nut-calendar
-      v-model:visible="state.showDate"
-      :default-value="state.defaultDate"
+    <van-calendar
+      v-model:show="state.showDate"
+      ref="calendar"
       type="range"
-      :start-date="format(new Date(2026, 0, 1), 'yyyy-MM-dd')"
-      :end-date="format(new Date(), 'yyyy-MM-dd')"
-      @choose="onDate" />
+      allow-same-day
+      :min-date="state.minDate"
+      :max-date="state.maxDate"
+      :default-date="state.defaultDate"
+      @confirm="onDate" />
     <div class="time">
       <div class="icon"></div>
       <div>时间：{{ state.startTime }} ～ {{ state.endTime }}</div>
@@ -57,8 +59,6 @@
 <script setup>
   import { useRoute, useRouter } from 'vue-router'
   import { showToast, showLoadingToast, closeToast } from 'vant'
-  import { Calendar as NutCalendar } from '@nutui/nutui'
-  import '@nutui/nutui/dist/style.css'
   import { onMounted, onUnmounted, reactive, useTemplateRef } from 'vue'
   import { format, subDays, subMonths, startOfDay, endOfDay } from 'date-fns'
   import { useAxios } from '../../hooks/useAxios'
@@ -69,9 +69,12 @@
     endTime: '',
     select: 0,
     sort: 'asc',
-    defaultDate: [format(new Date(), 'yyyy-MM-dd'), format(new Date(), 'yyyy-MM-dd')],
+    minDate: new Date('2026/01/01'),
+    maxDate: new Date(),
+    defaultDate: [new Date(), new Date()],
     showDate: false,
     selectBgRef: useTemplateRef('selectBg'),
+    calendarRef: useTemplateRef('calendar'),
   })
 
   let interval = null
@@ -161,6 +164,7 @@
         break
       case 3:
         state.selectBgRef.style.left = '5.175rem'
+        state.calendarRef.reset()
         state.showDate = true
         break
     }
@@ -168,8 +172,8 @@
 
   const onDate = async values => {
     const [start, end] = values
-    state.startTime = `${start[3]} 00:00:00`
-    state.endTime = `${end[3]} 23:59:59`
+    state.startTime = format(new Date(start), 'yyyy-MM-dd 00:00:00')
+    state.endTime = format(new Date(end), 'yyyy-MM-dd 23:59:59')
     state.showDate = false
     await getData()
   }
